@@ -1,0 +1,8 @@
+age,income,student,credit.rating,buys
+31..40,high,no,fair,yes
+>40,medium,no,fair,yes
+>40,high,yes,excellent,yes
+>40,low,yes,excellent,no
+31..40,low,no,excellent,yes
+<=30,medium,no,fair,no
+<=30,low,yes,fair,no
