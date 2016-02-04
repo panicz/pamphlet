@@ -86,8 +86,8 @@ chain eventually has its author.} and the author's motivations.
 Having worked for a couple of months in an engineering company that
 manufactured electronic equipment, I decided that perhaps its the
 best time to finish my education. I enrolled to the department of
-Computer Science. Among other subjects, we had a lab devoted to
-some data processing heuristics jointly named 
+Computer Science at the University of Gdańsk. Among other subjects,
+we had a lab devoted to some data processing heuristics jointly named 
 ``computational intelligence''.
 
 During the first meeting, we were getting acquainted with the
@@ -207,8 +207,8 @@ the definitions. Examples (sometimes called \textit{unit
 tests} by the software folks) serve mainly as a means
 of ensuring that a program behaves as expected, which
 gains importance as the program is subject to a change.
-Theorems manifest themselves in a weak form of \texttt{assertions}
-and \texttt{type signatures}, and proofs are usually performed
+Theorems manifest themselves in a weak form of \textit{assertions}
+and \textit{type signatures}, and proofs are usually performed
 by specific tools such as type checkers or model checkers.
 Furthermore, false assertions can typically be refuted
 during the execution of a program.
@@ -274,10 +274,30 @@ benefit from this ability.
 So perhaps the shortest answer to the question posited
 in the title of this section is: \textit{you}.
 
+\section*{Acknowledgements}
+Most of all, I would like to thank Grzegorz Madejski, who was
+the teaching assistant that allowed me to go my own way,
+and encouraged me to devote more time to this project.
+
+I am also truly grateful to my family and my girlfriend,
+as they all encouraged me to go back to the university. I certainly
+wouldn't make it without their support.
+
+I deeply appreciate the interest, support, feedback and
+encoragement of my friends who allowed me to bother them with
+the early versions of this text, and with whom I have had many
+valuable and inspiring conversations, including Ścisław Dercz,
+Hubert Melchert, Michał Janke, Marcin Jędruch, Jan Makulec
+and Aleksander Mohuczy-Dominiak. 
+
+Last and the least, I would like to thank Bjarne Stroustrup,
+Rasmus Lerdorf and all the others who fueled me with hatred
+needed to finish this lousy piece of work.
+
 \section*{Reporting bugs}
 
 I realize that the quality of this text may be questionable.
-After all, it is a pamphlet. However, if you find any parts
+After all, this is a pamphlet. However, if you find any parts
 of the text obscure or difficult to understand, or if you
 find any mistakes in the explanations presented here, or
 simply want to talk about how miserable the world is, feel
@@ -286,7 +306,7 @@ free to write an e-mail to \url{godek.maciek+pamphlet@gmail.com}.
 Also make sure that you are reading the latest version
 of this pamphlet, always available from
 
-\url{https://pamphlet.github.io/pamphlet.pdf}
+\url{https://panicz.github.io/pamphlet/pamphlet.pdf}
 
 as many of the bugs may already have been fixed.
 
@@ -551,9 +571,9 @@ In this particular case, we also happen to have written
 (a fragment of) a program in a programming language called Scheme,
 which enumerates a whole set of notions that are regarded as 
 simple\footnote{The exact specification of the basic terms
-of Scheme is provided in the \textit{Revised Report on the
+of Scheme is provided in the \textit{Revised$^n$ Report on the
 Algorithmic Language Scheme} that can be found at
-\url{http://www.schemer.org}.}, and the notion of
+\url{http://www.schemers.org/Documents/Standards}.}, and the notion of
 \texttt{prime-numbers} certainly does not belong to that set.
 It does, however, contain the notions of numbers, addition,
 multiplication, division, comparison and it also provides some means
@@ -1048,7 +1068,7 @@ in Geiser.}.
 Before we get anything done, we need to legalize the syntactic
 extensions that are used throughout this pamphlet: first, the
 additional modules need to be downloaded from the pamphlet's
-repository, available at \url{https://github.org/panicz/pamphlet}
+repository, available at \url{https://github.com/panicz/pamphlet}
 and placed somewhere in Guile's \%load-path, and then we need to
 type in the expression:
 \begin{Verbatim}[samepage=true]
@@ -1912,7 +1932,7 @@ operator, so for example, in the expression
   ((a b c ... z))
   `(,a ,b ,@c ,z))
 \end{Verbatim}
-\textt{a},\texttt{b} and \texttt{z} will be bound with
+\texttt{a},\texttt{b} and \texttt{z} will be bound with
 \texttt{1}, \texttt{2} and \texttt{6}, respectively, and the
 \texttt{c} name will be bound with the list \texttt{(3 4 5)},
 so the value of the above expression will simply be the list
@@ -2036,7 +2056,7 @@ It is customary however to represent these notions using
 numerical values: truth is usually represented using $1$,
 and falsehood -- using $0$. If we view it that way, the
 conjunction can be perceived as a particular case of the
-\textit{minimum} function, and conjunction -- as an
+\textit{minimum} function, and disjunction -- as an
 instance of the \textit{maximum} function. Furthermore,
 the negation can be interpreted as the function $1-x$, where
 $x$ is the logical value of the negated formula.
@@ -2071,7 +2091,7 @@ even caring how is the sentence ``a natural language is basically
 a system for describing perceptions'' a description of
 a perception. Reading Zadeh's work, one gets the sense that,
 trying to prove the value of his idea, he indeed started to
-reason in a vague way.
+reason in a vague and imprecise way.
 
 Among the examples that Zadeh gives is the notion of ``tallness''.
 For example, most people will admit that a person that is
@@ -2329,7 +2349,7 @@ according to the membership functions defined above,
 the BMI parameter of $29$ may be considered \textit{overweight}
 with the degree $0.88$, \textit{obese} with the degree $0.13$,
 \textit{healthy} with the degree $0.05$ and \textit{underweight}
-with the degree $0$.
+with a degree very close to $0$.
 
 So it would be convenient to have a function that, for
 a given labeled tuple, returns the extent in which the
@@ -3354,6 +3374,7 @@ The \texttt{latex/qtree} interface is a simple wrapper on the
 \texttt{latex/qbranch} function that ``does all the work'', i.e.
 that converts a tree into a string containing \LaTeX{} code
 for displaying a tree. The \texttt{latex/tabular} function
+does nothing beyond the obvious.
 
 The defined functions make an extensive use of built-in functions
 \texttt{string-append} and \texttt{string-join} as well as
