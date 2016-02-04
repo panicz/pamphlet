@@ -52,7 +52,7 @@
 % Book's title and subtitle
 \title{\Huge \textbf{A Pamphlet against R} \\ \huge{Computational Intelligence in Guile Scheme}}
 % Author
-\author{\textsc{Panicz Maciej Godek}\thanks{\url{www.example.com}}}
+\author{\textsc{Panicz Maciej Godek}}
 
 \begin{document}
 
@@ -96,7 +96,7 @@ the semester for the assignments.
 
 Initially, I had an ambivalent attitude towards this endeavour.
 On one hand, there's been quite a few programming languages
-that I used throughout my carrier: JavaScript, Python, PHP,
+that I used throughout my career: JavaScript, Python, PHP,
 Perl, Bash, Matlab, SQL, C, C++, Assembly, Haskell, Erlang, Prolog,
 Pascal, BASIC, VisualBasic, MiniKanren and a few others. Some of those
 languages were really mind-expanding in some ways.
@@ -148,14 +148,147 @@ this pamphlet, whether it be education, entertainment or personal
 hygiene\footnote{Concerns the printed copies}.
 
 \section*{Structure of this pamphlet}
-% You might want to add short description about each chapter in this book.
-The chapters of this  correspond loosely to the assignments
-that we were given for the lab during the semester. Sometimes
-the code written later will dwell upon the code from earlier
-chapters. In such situations I will be indicating the exact
-parts of the text where the required notions were defined and
-explained.
+This pamphlet assumes no prior knowledge about programming.
+If you think that you already possess that sort of knowledge,
+that's not my problem. 
 
+Throughout the subsequent chapters, a large subset of the Scheme
+programming language is being laid out, and the later chapters
+usually dwell upon the knowledge from the previous ones.
+The first chapter introduces all the elementary notions needed
+for programming. The next two chapters show how to use that
+knowledge in practice. The fourth chapter introduces a few
+more features of the language that are used in the fifth
+chapter.
+
+In each chapter there also appear some new definitions that
+are used later. For example, the third chapter presents
+the notion of \texttt{equivalence-classes}, that are used
+extensively throughout the fifth chapter.
+
+The vision of programming presented here departs significantly
+from the mainstream view, where a program is perceived
+as a sequence of steps that lead us to a desired goal.
+
+On the contrary, I intended to explain programs as
+intellectual constructs of increasing complexity,
+so reading the chapters in their proper sequence
+is strongly recommended.
+
+\section*{How to read this pamphlet}
+
+The essential part of the pamphlet are the definitions.
+Everything else is just a scaffolding whose purpose is to
+facilitate their comprehension. The ultimate goal is to
+make those definitions dance in the reader's head, so
+each definition should be studied with care. If there are
+no examples given, it is up to the reader to come up
+with proper examples, because if a definition is the
+dance, then examples are certainly the ones that
+perform that dance.
+
+The whole point of a definition is to create or express
+a notion that can be further used to think about phenomena
+in the world. Internalizing a definition is not always
+a pleasant task, because it requires an intellectual
+effort of focusing and remembering.
+
+Reading programs isn't like reading novels, because
+of their higher level of generality: we can absorb
+stories almost effortlessly, but comprehending abstractions
+requires a very different attitude. Well written programs
+are a bit like mathematical textbooks. The latter usually
+consist mainly of definitions, examples, theorems and proofs
+(and excercises).
+
+The role of theorems is usually diminished in the realm
+of computer programs: the essential part are the constructions,
+the definitions. Examples (sometimes called \textit{unit
+tests} by the software folks) serve mainly as a means
+of ensuring that a program behaves as expected, which
+gains importance as the program is subject to a change.
+Theorems manifest themselves in a weak form of \texttt{assertions}
+and \texttt{type signatures}, and proofs are usually performed
+by specific tools such as type checkers or model checkers.
+Furthermore, false assertions can typically be refuted
+during the execution of a program.
+
+In the case of the math textbooks, exercises and examples
+are a way of facilitating comprehension. It is usually
+much easier to understand an abstract definition if
+we have can train it on a given example, while exercises
+are ``partial examples'' that enforce us to do the
+reasoning for ourselves.
+
+Reading a math textbook without exercises is also
+possible, but it is up to the reader to come up
+with those\footnote{
+Programmers usually read computer programs in order
+to change them, which is an ultimate exercise
+in the comprehension of complex systems. On the
+other hand, programs are often written with the
+purpose of ``doing their job'', rather than
+being comprehended and modfied.
+
+From my experience, this approach dominates
+not only in the industry (which is understandable),
+but also in education (which is harmful to the
+industry).
+}.
+
+\section*{Who should read this pamphlet}
+
+The title of this pamphlet may be misleading,
+because it may cause readers to think that
+it mainly concerns some computational methods.
+Although there are certainly some computations
+involved, the pamphlet is really about thinking
+and communicating thoughts.
+
+While it is difficult to imagine a person that
+wouldn't potentially benefit from obtaining the
+knowledge presented here, there are some groups
+of people that are particularly encoraged to do so.
+
+For instance, this text may be of interest to
+philosophers and linguists, because it presents
+a linguistic perspective on communicating thoughts
+in a precise manner.
+
+It may also be interesting to evolutionary biologists,
+because it contains a quote from Richard Dawkins
+and stuff like that.
+
+It should be of particular interest to computer
+scientists and programming language designers, to
+convince them to stop designing new languages immediately,
+because -- as the history teaches us -- they sometimes
+succeed, forcing generations of programmers to
+suffer because of the ignorance of their creators.
+
+However, as I said, this book is no more about
+programming than it is about clear thinking, and
+it is difficult to imagine someone that could not
+benefit from this ability.
+
+So perhaps the shortest answer to the question posited
+in the title of this section is: \textit{you}.
+
+\section*{Reporting bugs}
+
+I realize that the quality of this text may be questionable.
+After all, it is a pamphlet. However, if you find any parts
+of the text obscure or difficult to understand, or if you
+find any mistakes in the explanations presented here, or
+simply want to talk about how miserable the world is, feel
+free to write an e-mail to \url{godek.maciek+pamphlet@gmail.com}.
+
+Also make sure that you are reading the latest version
+of this pamphlet, always available from
+
+\url{https://pamphlet.github.io/pamphlet.pdf}
+
+as many of the bugs may already have been fixed.
 
 %%%%%%%%%%%%%%%%
 % NEW CHAPTER! %
@@ -878,7 +1011,9 @@ advantage of our notation: it can be ``comprehended'' by computers,
 so on one hand, we have a practical instance of verification whether
 our beliefs regarding the meanings of certain expressions are right,
 and on the other -- we can employ the computer to do some parts
-of reasoning for us.
+of reasoning for us. Of course, if you do not wish an inferior machine
+to perform the noble task of reasoning for you, you can still
+benefit from reading the pamphlet and exercising the strict notation.
 
 There are many free practical implementations of Scheme. Probably
 the most popular and accessible is Racket, which comes with
@@ -913,8 +1048,9 @@ in Geiser.}.
 Before we get anything done, we need to legalize the syntactic
 extensions that are used throughout this pamphlet: first, the
 additional modules need to be downloaded from the pamphlet's
-repository and placed somewhere in Guile's \%load-path, and then
-we need to type in the expression:
+repository, available at \url{https://github.org/panicz/pamphlet}
+and placed somewhere in Guile's \%load-path, and then we need to
+type in the expression:
 \begin{Verbatim}[samepage=true]
 (use-modules (ice-9 nice-9) (srfi srfi-1) (pamphlet))
 \end{Verbatim}
@@ -1768,12 +1904,40 @@ of the expression \texttt{(string-split line \#\char`\\space)}
 to the pattern \texttt{(strings ... "0")}. What it actually
 does is that it skips the last element (that is assumed to
 be \texttt{"0"}) from the result of \texttt{string-split}.
-Note also that we used the value \texttt{\#\char`\\space} as the
-second argument to \texttt{string-split}. It is a Scheme
-name for the ``space'' character (characters are also a data
-type in Scheme). Note also that we had to apply another
-filter on the result of the string-split, in order to remove
-empty strings from it, that appeared if there were two or more
+The \texttt{...} operator for the pattern matcher behaves
+in a complementary way to the \texttt{unquote-splicing}
+operator, so for example, in the expression
+\begin{Verbatim}[samepage=true]
+(match '(1 2 3 4 5 6)
+  ((a b c ... z))
+  `(,a ,b ,@c ,z))
+\end{Verbatim}
+\textt{a},\texttt{b} and \texttt{z} will be bound with
+\texttt{1}, \texttt{2} and \texttt{6}, respectively, and the
+\texttt{c} name will be bound with the list \texttt{(3 4 5)},
+so the value of the above expression will simply be the list
+\texttt{(1 2 3 4 5 6)}. The \texttt{...} operator cannot
+appear more than once in a list, so for example patterns like
+\texttt{(a ... k ... z)} are illegal, as they would result
+in an ambiguous match. The \texttt{...} operator has
+another magical property -- in the pattern
+\begin{Verbatim}[samepage=true]
+(match '((a . 1) (b . 2) (c . 3))
+  (((keys . values) ...)
+   `(,keys ,values)))
+\end{Verbatim}
+the \texttt{keys} symbol will be bound with the list \texttt{(a b c)},
+and the \texttt{values} symbol -- with \texttt{(1 2 3)}, so the
+list subjected to pattern matching will be \textit{unzipped}.
+We will be making a use of this feature later.
+
+Back to our parser, note that we used the value
+\texttt{\#\char`\\space} as the second argument to 
+\texttt{string-split}. It is a Scheme name for the ``space'' character 
+(characters are also a data type in Scheme). Note also
+that we had to apply another filter on the result of the
+\texttt{string-split}, in order to remove empty strings from it,
+that appeared if there were two or more
 consecutive spaces in a given line.
 
 \subsection{Applying the genetic strategy}
@@ -1801,7 +1965,12 @@ in the main formula:
 \end{Verbatim}
 
 The code uses two library functions, \texttt{delete-duplicates}
-(that does exactly what it says) and \texttt{append-map}, which
+(that does exactly what it says\footnote{
+It is very important in programming to choose appropriate
+names for concepts, whether ultimate or intermediate, because
+knowing that we can trust the names, we don't need to resort
+to documentation.
+}) and \texttt{append-map}, which
 is like \texttt{map} except that its functional argument is
 expected to return a list, and that list is \textit{appended}
 to the resulting list, rather than \textit{inserted} as
@@ -2478,10 +2647,9 @@ In other words, we passed along some numbers to receive yet another number.
 
 \chapter{Matrix Operations}
 
-\begin{chapquote}{Agent Smith}
-``Never send a human to do a machine's job.''
+\begin{chapquote}{David Jacobs}
+``Code is like poetry; most of it shouldn't have been written.''
 \end{chapquote}
-
 
 In the previous chapters we've been dealing with certain methods
 of \textit{soft computing}. The numerical packages (or ``programming
@@ -3611,7 +3779,6 @@ in order to further operate on it, for example:
 (define iris/quantized (quantize iris))
 \end{Verbatim}
 
-
 \section{Evaluating classifiers}
 
 Although we have presented a few methods for classifying data,
@@ -3717,7 +3884,7 @@ errors:
 \end{Verbatim}
 
 As we said earlier, the use of the evaluator requires us
-to keep to certain conventions -- the strategy needs to
+to stick to certain conventions -- the strategy needs to
 be a function that takes data and returns a classifier
 for a single sample. The \texttt{classify/knn} function
 already conforms to that convention (once the \texttt{k}
@@ -3738,7 +3905,16 @@ therefore we need to adopt them:
 Note that the \texttt{classify/decision-tree} will
 misbehave under the substitutional model of computation,
 because it will require to reconstruct the decision tree
-for each sample.
+for each sample. This can be solved easily using the
+technique of \textit{memoization} that we will not cover
+here.
+
+Finally, we can use our evaluator to verify the quality
+of our classifiers:
+
+\begin{Verbatim}
+(evaluate-strategy classify/decision-tree 7/10 iris/quantized)
+\end{Verbatim}
 
 \section{Clusterization}
 In the previous sections we've been dealing with a task
