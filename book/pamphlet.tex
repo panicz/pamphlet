@@ -287,6 +287,8 @@ in the title of this section is: \textit{you}.
 Most of all, I would like to thank Grzegorz Madejski, who was
 the teaching assistant that allowed me to go my own way,
 and encouraged me to devote more time to this project.
+His classes were the source of all the examples that were
+presented in this text.
 
 I am also truly grateful to my family and my girlfriend,
 as they all encouraged me to go back to the university. I certainly
@@ -299,6 +301,8 @@ valuable and inspiring conversations, including Ścisław Dercz,
 Hubert Melchert, Michał Janke, Marcin Jędruch, Jan Makulec
 and Aleksander Mohuczy-Dominiak. 
 
+I owe thanks to David Hashe and Robert Różański for pointing
+out some errors.
 
 \section*{Reporting bugs}
 
@@ -324,7 +328,7 @@ as many of the bugs may already have been fixed.
 
 \begin{chapquote}{Hal Abelson and Gerald Sussman, 
 \textit{Structure and Interpretation of Computer programs}}
-
+\begin{quotation}
   ``The acts of the mind [...] are chiefly these three:
   1. Combining several simple ideas into one, and thus all complex
   ideas are made.
@@ -335,6 +339,7 @@ as many of the bugs may already have been fixed.
   3. [...] separating them from all the other ideas that accompany
   them in their real existence: this is called abstraction, and thus
   all its general ideas are made.''
+\end{quotation}
 
   John Locke, \textit{An Essay Concerning Human Understanding} (1690)
 
@@ -343,9 +348,11 @@ as many of the bugs may already have been fixed.
   A powerful programming language [...] serves as a framework within 
   which we organize our ideas [...]. Every programming language has
   three mechanisms for accomplishing this:
-  - \textbf{primitive expressions} [...]
-  - \textbf{means of combination} [...]
-  - \textbf{means of abstraction} [...]
+  \begin{itemize}
+  \item \textbf{primitive expressions} [...]
+  \item \textbf{means of combination} [...]
+  \item \textbf{means of abstraction} [...]
+  \end{itemize}
 
 \end{chapquote}
 
@@ -515,6 +522,7 @@ of two arguments: ``$N$ least prime numbers greater than $M$''.
 
 We can define this function as follows:
 
+\begin{quotation}
 The meaning of ``$0$ least prime numbers greater than $M$''
 is an empty sequence.
 
@@ -523,6 +531,7 @@ is a sequence whose first element is $M+1$, and whose
 remaining elements are the $N$ prime numbers greater
 than $M+1$, if $M+1$ is a prime number. Otherwise
 it's just the same as $N+1$ prime numbers greater than $M+1$.
+\end{quotation}
 
 Although the above formulation is a legitimate description
 that explains how to construct a sequence of subsequent
@@ -976,7 +985,7 @@ our variant, so redefining it is strongly discouraged.}:
 \end{Verbatim}
 
 Therefore, ``the squares of initial seven primes'' should be written
-as \texttt{(map squares (prime-numbers 7 0))}.
+as \texttt{(map square (prime-numbers 7 0))}.
 
 The only thing that's left is to explain what the sum of a list is.
 We should consider the boundary condition first: what would be the
@@ -2915,7 +2924,7 @@ should infer that for us.
 For the remainder of this chapter, we will be assuming
 that a database will be a list of lists, and that
 the first list of the database will be a header
-(a list of symbol) and all the remaining lists
+(a list of symbols) and all the remaining lists
 will contain data, whether it be \textit{numerical} or
 \textit{nominal}.
 
@@ -3948,7 +3957,7 @@ of our classifiers:
 In the previous sections we've been dealing with a task
 of assigning known labels to the elements in a set. This
 section presents a method called \textit{k means} that
-allows to established distinct categories within an unlabeled
+allows to establish distinct categories within an unlabeled
 set of numerical data. This technique is in general called
 \textit{clusterization}.
 
