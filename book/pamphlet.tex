@@ -56,9 +56,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Book's title and subtitle
-\title{\Huge \textbf{A Pamphlet against R} \\ \huge{Computational Intelligence in Guile Scheme}}
+\title{\Huge \textbf{A Pamphlet against R} \\ \huge{Computational Intelligence \\ in Guile Scheme}}
 % Author
-\author{\textsc{Panicz Maciej Godek}}
+\author{\textsc{Panicz Maciej Godek} 
+\\ 
+\\ 
+\small{edited by: \textsc{Lawrence Bottorff}} }
 
 \begin{document}
 
@@ -163,8 +166,9 @@ knowledge in practice. The fourth chapter introduces a few
 more features of the language that are used in the fifth
 chapter.
 
-Each chapter will introduce new definitions to be used in later applications. For example, the third chapter presents
-the notion of \textit{equivalence-classes} used
+Each chapter will introduce new definitions to be used in later applications.
+For example, the third chapter presents
+the notion of \texttt{equi\-valence\--classes} used
 extensively throughout the fifth chapter.
 
 The vision of programming presented here departs significantly
@@ -278,8 +282,8 @@ valuable and inspiring conversations, including Ścisław Dercz,
 Hubert Melchert, Michał Janke, Marcin Jędruch, Jan Makulec
 and Aleksander Mohuczy-Dominiak. 
 
-I owe thanks to David Hashe and Robert Różański for pointing
-out some errors.
+I owe thanks to David Hashe, Robert Różański and Martin Clausen
+for pointing out some errors and suggesting improvements.
 
 \section*{Reporting bugs}
 
@@ -504,10 +508,14 @@ The meaning of ``$0$ least prime numbers greater than $M$''
 is an empty sequence.
 
 The meaning of ``$N+1$ prime numbers greater than $M$''
-is a sequence whose first element is $M+1$, and whose
+is:
+\begin{itemize}
+\item a sequence whose first element is $M+1$, and whose
 remaining elements are the $N$ prime numbers greater
-than $M+1$, if $M+1$ is a prime number. Otherwise
-it's just the same as $N+1$ prime numbers greater than $M+1$.
+than $M+1$, \textbf{if} $M+1$ is a prime number;
+\item otherwise it's just the same as $N+1$ prime numbers
+greater than $M+1$.
+\end{itemize}
 \end{quotation}
 
 Although the above formulation is a legitimate description
@@ -1062,8 +1070,8 @@ Before we get anything done, we need to legalize the syntactic
 extensions that are used throughout this pamphlet: first, the
 additional modules need to be downloaded from the pamphlet's
 repository, available at \url{https://github.com/panicz/pamphlet}
-and placed somewhere in Guile's \%load-path, and then we need to
-type in the expression:
+(the \texttt{libraries} directory), and placed somewhere
+in Guile's \%load-path, and then we need to type in the expression:
 \begin{Verbatim}[samepage=true]
 (use-modules (ice-9 nice-9) (srfi srfi-1) (pamphlet))
 \end{Verbatim}
