@@ -248,7 +248,7 @@ and communicating thoughts.
 
 While it is difficult to imagine anyone who
 would not benefit from the
-knowledge presented here, there are some groups who are particularly encoraged to do so. For instance, this text may be of interest to philosophers and linguists, as it presents
+knowledge presented here, there are some groups who are particularly encouraged to do so. For instance, this text may be of interest to philosophers and linguists, as it presents
 a linguistic perspective on communicating thoughts
 in a precise manner.
 
@@ -276,7 +276,7 @@ as they all encouraged me to go back to college. I certainly
 wouldn't make it without their support.
 
 I deeply appreciate the interest, support, feedback and
-encoragement of my friends who allowed me to bother them with
+encouragement of my friends who allowed me to bother them with
 the early versions of this text, and with whom I have had many
 valuable and inspiring conversations, including Ścisław Dercz,
 Hubert Melchert, Michał Janke, Marcin Jędruch, Jan Makulec
@@ -762,7 +762,7 @@ its arguments. In this particular example, we could as well have written
 The \texttt{equal?} function is a predicate which says that two
 or more compound objects are identical.
 
-In Scheme, there is a few distinct concepts of equality. The first
+In Scheme, there are a few distinct concepts of equality. The first
 that we have seen is called \textit{numerical equality} and is
 expressed using the \texttt{=} symbol. The second that we've just
 seen above is called \textit{identity}, and is expressed using
@@ -970,7 +970,7 @@ our variant, so redefining it is strongly discouraged.}:
 \end{Verbatim}
 
 Therefore, ``the squares of initial seven primes'' should be written
-as \texttt{(map square (prime-numbers 7 0))}.
+as \texttt{(map square (prime-numbers 7 1))}.
 
 The only thing that's left is to explain what the sum of a list is.
 We should consider the boundary condition first: what would be the
@@ -992,7 +992,7 @@ complicated.}:
 We can now present the solution to the original problem: ``the sum
 of squares of initial 7 primes'' is
 
-\texttt{(sum (map square (prime-numbers 7 0)))}
+\texttt{(sum (map square (prime-numbers 7 1)))}
 
 Note the similarity between the formulation and the solution. This
 sort of similarity isn't reserved for the Scheme programming language,
@@ -1021,7 +1021,7 @@ and very useful comments that begin with \texttt{\#;} and comment out
 exactly one expression that follows them. We could therefore
 enrich our solution with additional information:
 
-\texttt{(sum (map square (prime-numbers 7 \#;greater-than-or-equal 0)))}
+\texttt{(sum (map square (prime-numbers 7 \#;greater-than-or-equal 1)))}
 
 \subsection{Getting your hands dirty}
 
@@ -1083,7 +1083,7 @@ a sequence of \texttt{prime-numbers}, what is a \texttt{square}
 of a number and how to \texttt{sum} a list of numbers.
 
 Then, we can ask the computer to give us the value of the
-expression \texttt{(sum (map square (prime-numbers 7 0)))}.
+expression \texttt{(sum (map square (prime-numbers 7 1)))}.
 
 \subsection{Looking down}
 
@@ -1097,7 +1097,7 @@ the \textit{quotation} operator.
 
 In Scheme, the quotation operator is expressed using
 \texttt{quote} form. For example, the value of the expression
-\texttt{(quote (sum (map square (prime-numbers 7 0))))}
+\texttt{(quote (sum (map square (prime-numbers 7 1))))}
 is a sequence of two elements, whose first element is
 a symbol \texttt{sum}, and whose second element is a sequence
 of three elements, whose first element is a symbol \texttt{map},
@@ -1142,21 +1142,29 @@ by John McCarthy\cite{McCarthy1960}, which gave birth to
 the predecessor of Scheme called Lisp.}.
 
 To give a simple example, we will describe the semantics of
-a simple formal system called \textit{propositional logic}.
+a simple formal system called \textit{propositional logic}, which
+captures how compound sentences are built from given ones (so-called
+\textit{atomic} ones).
 
-In propositional logic, the expressions can either be propositional
-variables $p,q,r,...$, or junctions of expressions: $\phi \vee \psi$,
+The expressions of propositional logic, also called \textit{formulas},
+are either propositional variables $p,q,r,...$ standing for atomic
+sentences, or junctions of expressions: $\phi \vee \psi$,
 $\phi \wedge \psi$, $\phi \Rightarrow \psi$, $\phi \equiv \psi$,
-$\neg \phi$. These compound formulas mean disjunction (``$\phi$ or
+$\neg \phi$. These compound expressions mean disjunction (``$\phi$ or
 $\psi$''), conjunction (``$\phi$ and $\psi$''), implication
 (``if $\phi$ then $\psi$''), equivalence (``$\phi$ if and only
 if $\psi$''), and negation (``it is not the case that $\phi$''),
 accordingly. For the remainder of this example we shall be concerned
 only with conjunction, disjunction and negation.
 
-The semantics of the language is as follows: atomic formulas
-can either be true or false, depending on a given \textit{valuation}.
-The compound formula is true if it is a negation and the negated
+The semantics of propositional logic determines the logical value
+(i.e. truth or false) of each formula, with respect to some given
+\textit{valuation}, i.e. a mapping from propositional variables to
+logical values.
+
+It goes as follows: the formula is true if either
+ it is a propositional variable and the valuation maps it to truth, % ?!
+or it is a negation and the negated
 sub-formula is false, or if it is a conjunction and all its
 sub-formulas are true, or if it is a disjunction and at least
 one of its sub-formulas is true; otherwise, the formula is false.
@@ -1190,9 +1198,7 @@ The same applies to disjunction.
 Having a fixed representation, we can explicate the conditions
 under which a formula is \texttt{satisfied?} under a given valuation.
 However, we need to find some way to represent a valuation.
-
-A valuation is a mapping between the names of atomic formulas
-and their logical values. One obvious representation of a mapping
+One obvious representation of a mapping
 is by enumerating the name-value pairs. For example, if there
 are three distinct atomic formulas $p,q,r$ in $\phi$, one of
 the eight possible valuations could be written as
@@ -1238,12 +1244,12 @@ to use the \texttt{lookup} procedure:
 \begin{Verbatim}[samepage=true]
 (define (lookup key #;in mapping)
   (let* ((this (car mapping))
-         (next (cdr mapping))
+         (remaining (cdr mapping))
          (name (car this))
          (value (cdr this)))
     (if (eq? name key)
       value
-      (lookup key next))))
+      (lookup key remaining))))
 \end{Verbatim}
 
 We see a new construct here -- the \texttt{let*} form.
@@ -1265,12 +1271,12 @@ intermediate names using local \texttt{define} forms:
 \begin{Verbatim}[samepage=true]
 (define (lookup key #;in mapping)
   (define this (car mapping))
-  (define next (cdr mapping))
+  (define remaining (cdr mapping))
   (define name (car this))
   (define value (cdr this))
   (if (eq? name key)
     value
-    (lookup key next)))
+    (lookup key remaining)))
 \end{Verbatim}
 
 The extent of the inner \texttt{define} forms is limited
@@ -1285,10 +1291,10 @@ we can use the marvelous feature of \textit{pattern matching}:
 
 \begin{Verbatim}[samepage=true]
 (define (lookup key #;in mapping)
-  (let* ((((name . value) . next) mapping))
+  (let* ((((name . value) . remaining) mapping))
     (if (eq? name key)
       value
-      (lookup key next))))
+      (lookup key remaining))))
 \end{Verbatim}
 
 This definition is much more compact than the original one,
@@ -1299,7 +1305,7 @@ its parts accordingly: the left value of the left value
 of \texttt{mapping} is named \texttt{name}, the right
 value of the left value of \texttt{mapping} is named
 \texttt{value}, and the right value of \texttt{mapping}
-is named \texttt{next}.
+is named \texttt{remaining}.
 
 Note that all the above variants of the \texttt{lookup}
 function assume that there has to be an element whose
