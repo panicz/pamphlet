@@ -1141,14 +1141,17 @@ of Symbolic Expressions and their Computation by Machine}
 by John McCarthy\cite{McCarthy1960}, which gave birth to
 the predecessor of Scheme called Lisp.}.
 
-To give a simple example, we will describe the semantics of
+To illustrate that idea, we will describe the semantics of
 a simple formal system called \textit{propositional logic}, which
-captures how compound sentences are built from given ones (so-called
-\textit{atomic} ones).
+captures how compound sentences are built from simpler ones.
+The simplest units of propositional logic are called
+\textit{atomic formulas} -- they stand for propositions
+that aren't analyzed in simpler terms, and that can only
+be \textit{asserted} or \textit{rejected}.
 
-The expressions of propositional logic, also called \textit{formulas},
-are either propositional variables $p,q,r,...$ standing for atomic
-sentences, or junctions of expressions: $\phi \vee \psi$,
+The expressions of propositional logic are either propositional
+variables $p,q,r,...$ standing for atomic
+formulas, or junctions of expressions: $\phi \vee \psi$,
 $\phi \wedge \psi$, $\phi \Rightarrow \psi$, $\phi \equiv \psi$,
 $\neg \phi$. These compound expressions mean disjunction (``$\phi$ or
 $\psi$''), conjunction (``$\phi$ and $\psi$''), implication
@@ -1158,16 +1161,17 @@ accordingly. For the remainder of this example we shall be concerned
 only with conjunction, disjunction and negation.
 
 The semantics of propositional logic determines the logical value
-(i.e. truth or false) of each formula, with respect to some given
+(i.e. truth or falsehood) of each formula with respect to some given
 \textit{valuation}, i.e. a mapping from propositional variables to
 logical values.
 
-It goes as follows: the formula is true if either
- it is a propositional variable and the valuation maps it to truth, % ?!
-or it is a negation and the negated
-sub-formula is false, or if it is a conjunction and all its
-sub-formulas are true, or if it is a disjunction and at least
-one of its sub-formulas is true; otherwise, the formula is false.
+If a formula is atomic, then its value is simply specified by the
+valuation. Otherwise it is a compound formula: a negation, a disjunction
+or a conjunction. If it is a negation, then it is true only if
+the negated formula is false; if it is a disjunction, then it
+is true only if at least one of its sub-formulas is true; finally,
+if it is a conjunction, then it is true only if all its sub-formulas
+are true.
 
 A formula is satisfiable if there exists a valuation under which
 it is true. A formula is logically valid if it is true for
