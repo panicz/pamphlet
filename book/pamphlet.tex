@@ -61,7 +61,7 @@
 \author{\textsc{Panicz Maciej Godek} 
 \\ 
 \\ 
-\small{edited by: \textsc{Lawrence Bottorff}} }
+\small{edited by: \textsc{Lawrence Bottorff} and \textsc{Rick Hanson}} }
 
 \begin{document}
 
@@ -106,10 +106,10 @@ Our first meeting was spent getting acquainted with the
 programming language R that we were supposed to use throughout
 the semester for the assignments. But I balked.
 
-On the one hand, I've used many programming languages throughout my career: JavaScript, Python, PHP,
-Perl, Bash, Matlab, SQL, C, C++, Assembly, Haskell, Erlang, Prolog,
-Pascal, BASIC, VisualBasic, MiniKanren, and a few others. Some of those
-languages were really mind-expanding in their own unique ways.
+On the one hand, I've used many programming languages throughout my career:
+JavaScript, Python, PHP, Perl, Bash, Matlab, SQL, C, C++, Assembly, Haskell,
+Erlang, Prolog, Pascal, BASIC, VisualBasic, MiniKanren, and a few others. 
+Some of those languages were really mind-expanding in their own unique ways.
 
 On the other hand, being a rather seasoned Schemer, I knew that
 most of these languages were only inferior incarnations of Lisp,
@@ -131,14 +131,15 @@ language that everybody complains about.}. The advocates of R sometimes
 admit that perhaps the language isn't perfect, but it contains
 a lot of convenient libraries to make the whole thing worthwhile.
 
-Being a nobody, I was in a gray area where I could complain about the language or not. I asked
-my TA whether he would allow me to choose another language for doing
-the assignments, and he agreed.
+Being a nobody, I was in a gray area where I could complain about
+the language or not. I asked my TA whether he would allow me to choose
+another language for doing the assignments, and he agreed.
 
 My language of choice was of course Scheme, or -- more precisely --
 Guile Scheme. I chose Guile Scheme because it has a wonderful trait:
 rather than helplessly complain about features I don't like, I can
-replace them with whatever I find more suitable. If a feature is missing from the language, I can add it, rather than swear and curse
+replace them with whatever I find more suitable. If a feature is
+missing from the language, I can add it, rather than swear and curse
 its developers.
 
 The title of this pamphlet may suggest that it is written against
@@ -148,26 +149,29 @@ However, the case of the R programming language is particularly
 interesting, because initially it was just a harmless implementation
 of Scheme; but then as a result of the irresponsible experiments
 of mad scientists it mutated into a monster\cite{Ihaka2010}.}.
-The ultimate goal of this text is to eliminate them all.
+The ultimate goal of this text is to violently eliminate them all.
 
-Recognizing that the aforementioned goal is rather quixotic, I will be satisfied instead if anyone finds any value in
+Recognizing that the aforementioned goal is rather quixotic, I will
+be satisfied instead if anyone finds any value in
 this pamphlet, whether it be education, entertainment or personal
 hygiene\footnote{Concerns the printed copies}.
 
 \section*{Structure of this pamphlet}
 This pamphlet assumes no prior knowledge of programming.
-If you think you already possess programming knowledge, you'll probably see much that is new here.
+If you think you already possess programming knowledge,
+you'll probably see much that is new here.
 
 Throughout the subsequent chapters, a large subset of the Scheme
-programming language will be laid out, later chapters building upon the earlier.
+programming language will be laid out, later chapters building
+upon the earlier.
 The first chapter introduces all the elementary notions needed
 for programming in Scheme. The next two chapters show how to use that
 knowledge in practice. The fourth chapter introduces a few
 more features of the language that are used in the fifth
 chapter.
 
-Each chapter will introduce new definitions to be used in later applications.
-For example, the third chapter presents
+Each chapter will introduce new definitions to be used
+in later applications. For example, the third chapter presents
 the notion of \texttt{equi\-valence\--classes} used
 extensively throughout the fifth chapter.
 
@@ -209,7 +213,8 @@ The role of theorems is usually diminished in the realm
 of computer programs: essential are the constructions,
 the definitions. Examples (sometimes called \textit{unit
 tests} by software folks) serve mainly as a means
-of ensuring a program behaves as expected, which gains importance as the program is subjected to changes.
+of ensuring a program behaves as expected, which gains
+importance as the program is subjected to changes.
 Theorems manifest themselves in the weak form of \textit{assertions}
 and \textit{type signatures}, while proofs are usually performed
 by specific tools such as type checkers or model checkers.
@@ -243,16 +248,23 @@ industry).
 
 \section*{Who should read this pamphlet}
 
-The title of this pamphlet may be misleading since readers might think we are only concerned with computational methods.
+The title of this pamphlet may be misleading since readers
+might think we are only concerned with computational methods.
 Although there are certainly computational methods
 involved, this work is really about thinking
 and communicating thoughts.
 
 While it is difficult to imagine anyone who
 would not benefit from the
-knowledge presented here, there are some groups who are particularly encouraged to do so. For instance, this text may be of interest to philosophers and linguists, as it presents
+knowledge presented here, there are some groups who are particularly
+encouraged to do so. For instance, this text may be of interest
+to philosophers and linguists, as it presents
 a linguistic perspective on communicating thoughts
 in a precise manner.
+
+It may also be interesting to evolutionary biologists,
+because it contains a quote from Richard Dawkins
+and stuff like that.
 
 It should be of particular interest to computer
 scientists and programming language designers, to
@@ -261,7 +273,8 @@ because -- as the history teaches us -- they often enough
 succeed, thereby forcing generations of programmers to
 suffer due to the ignorance of their creators.
 
-However, as previously indicated, this book is about programming \textit{and} clear thinking in equal measure, and
+However, as previously indicated, this book is about programming
+\textit{and} clear thinking in equal measure, and
 it is difficult to imagine someone who could not
 benefit from this combination.
 
@@ -269,7 +282,8 @@ And so perhaps the shortest answer to the question posited
 in the title of this section is: \textit{you}.
 
 \section*{Acknowledgements}
-Most of all, I would like to thank Grzegorz Madejski, the teaching assistant who allowed me to go my own way,
+Most of all, I would like to thank Grzegorz Madejski, the teaching
+assistant who allowed me to go my own way,
 and encouraged me to devote time to this project.
 His classes were the source of all the examples presented in this text.
 
@@ -284,16 +298,16 @@ valuable and inspiring conversations, including Ścisław Dercz,
 Hubert Melchert, Michał Janke, Marcin Jędruch, Jan Makulec
 and Aleksander Mohuczy-Dominiak. 
 
-I owe thanks to David Hashe, Robert Różański and Martin Clausen
-for pointing out some errors and suggesting improvements.
+I owe thanks to David Hashe, Robert Różański, Martin Clausen
+and Dave Creelman for pointing out some errors and suggesting
+improvements.
 
 \section*{Reporting bugs}
 
-Ah, bugs.  Perhaps, they can never be avoided (says your author
-wistfully and with a dramatic pause).
-
-If you find any mistakes in the explanations presented here, or if you
-find any parts of the text obscure or difficult to understand or
+I realize that the quality of this text may be questionable.
+After all, this is a pamphlet. However, if you find any parts
+of the text obscure or difficult to understand, or if you
+find any mistakes in the explanations presented here, or
 simply want to talk about how miserable the world is, feel
 free to write an e-mail to
 \href{mailto:godek.maciek+pamphlet@gmail.com}{godek.maciek+pamphlet@gmail.com}.
@@ -304,6 +318,10 @@ of this pamphlet, always available from
 \url{https://panicz.github.io/pamphlet}
 
 \noindent as many of the bugs may already have been fixed.
+
+Finally, if you would like to become a co-author and add your
+own chapters or examples, it will be my pleasure to merge your
+pull-requests.
 
 %%%%%%%%%%%%%%%%
 % NEW CHAPTER! %
@@ -1074,7 +1092,8 @@ extensions that are used throughout this pamphlet: first, the
 additional modules need to be downloaded from the pamphlet's
 repository, available at \url{https://github.com/panicz/pamphlet}
 (the \texttt{libraries} directory), and placed somewhere
-in Guile's \%load-path, and then we need to type in the expression:
+in Guile's \texttt{\%load-path}, and then we need to type in
+the expression:
 \begin{Verbatim}[samepage=true]
 (use-modules (ice-9 nice-9) (srfi srfi-1) (pamphlet))
 \end{Verbatim}
@@ -1100,7 +1119,7 @@ the \textit{quotation} operator.
 
 In Scheme, the quotation operator is expressed using
 \texttt{quote} form. For example, the value of the expression
-\texttt{(quote (sum (map square (prime-numbers 7 1))))}
+\texttt{(quote (sum (map square (prime\--numbers 7 1))))}
 is a sequence of two elements, whose first element is
 a symbol \texttt{sum}, and whose second element is a sequence
 of three elements, whose first element is a symbol \texttt{map},
@@ -2354,7 +2373,7 @@ the only thing that's left is to actually conduct the
 inference: given a tuple of labeled parameters describing
 a \texttt{patient}, say, \texttt{((bmi 29) (glycated-hemoglobin 5)
 (blood-pressure 20))}, we wish to provide a desired rating for it.
-In other words, want to \texttt{(infer \#;from underwriter-rules
+In other words, want to \texttt{(infer \#;from underwriter\--rules
 \#;about patient \#;within health-categories)}.
 
 First, we need to say to what \texttt{extent} does a
@@ -2418,7 +2437,7 @@ us what kind of output from the function we should expect,
 which in turn prompts us with the idea of how this output
 should be processed further.
 
-We ought to take another look at our \texttt{underwriter-rules}.
+We ought to take another look at our \texttt{underwriter\--rules}.
 They all take the form 
 
 \texttt{`(if ,condition (is ,property ,classification))}
@@ -2491,7 +2510,7 @@ that is left is to conduct the inference.
 
 This is actually the trickiest part, as it is concerned
 with a notion (or rather pseudo-notion) of \textit{defuzzification}.
-Let me remind that the \texttt{underwriter-rules} consist
+Let me remind that the \texttt{underwriter\--rules} consist
 of three rules, corresponding to three possible classifications
 of \texttt{rating}: \texttt{standard}, \texttt{perfect} and
 \texttt{refuse}. For example, the first rule said:
@@ -2637,7 +2656,7 @@ the classifications of the \texttt{property} values,
 we need to defuzzify each \texttt{function}.
 
 We are going to use the aforementioned method of
-computing the \texttt{center-of-gravity}. This
+computing the \texttt{center\--of\--gravity}. This
 method is based on \textit{numerical integration}
 that will not be covered here.
 
@@ -3028,12 +3047,12 @@ function \texttt{the}:
 
 We have used the \texttt{with-default} derived form
 that we have also used in the definition of the
-\texttt{center-of-gravity} function that was used
+\texttt{center\--of\--gravity} function that was used
 in the defuzzification process. The default universe
 consists of an empty realm of ideas and of a single
 entity with no properties.
 
-Unlike the \texttt{center-of-gravity} function,
+Unlike the \texttt{center\--of\--gravity} function,
 the default context of the \texttt{the} function isn't
 particularly helpful, so we will likely need to
 override the desired value somehow. For this purpose,
@@ -3174,8 +3193,8 @@ We can now define the Naive Bayes of a record in the following way:
 \end{Verbatim}
 
 In the definition, we introduced two auxiliary definitions
-of \texttt{unconditional-probability} of belonging to a \texttt{class}
-and of \texttt{partial-conditional-probabilities} of having
+of \texttt{unconditional\--probability} of belonging to a \texttt{class}
+and of \texttt{partial\--conditional\--probabi\-lities} of having
 certain properties given that we belong to given \texttt{class}.
 
 We have also used the \texttt{argmax} library function that
@@ -3211,7 +3230,7 @@ so it is important to ask them in a way that allows to
 reject as many alternative options as possible.
 
 For example, let's take a look at this slightly larger version
-of the \texttt{computer-purchase} database:
+of the \texttt{computer\--purchase} database:
 \begin{Verbatim}
 (define computer-purchase
   '((age     income student credit-rating buys)
@@ -3391,7 +3410,7 @@ for displaying a tree. The \texttt{latex/tabular} function
 does nothing beyond the obvious.
 
 The defined functions make an extensive use of built-in functions
-\texttt{string-append} and \texttt{string-join} as well as
+\texttt{string\--append} and \texttt{string\--join} as well as
 a library function \texttt{->string} that converts arbitrary
 Scheme objects to strings.
 
@@ -3411,7 +3430,7 @@ a computer or not.
 
 Regardless of the underlying intuitions, we can show how to
 construct a decision tree, provided that we know how to
-specify what is an \texttt{information-gain} of an
+specify what is an \texttt{information\--gain} of an
 \texttt{attribute} with regard to a certain \texttt{label}
 (which, in the above case, is the \texttt{buys} attribute).
 
@@ -3496,7 +3515,7 @@ table:
 \end{Verbatim}
 
 What's left before our code can actually work is to define
-the \texttt{information-gain} somehow. There are many ways
+the \texttt{information\--gain} somehow. There are many ways
 in which it can be defined. I will present the definition
 based on Claude Shannon's notion of \textit{information entropy},
 although I need to note that I do not comprehend it fully.
