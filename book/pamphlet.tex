@@ -119,9 +119,9 @@ for those well-established concepts.
 I was very soon to find out that my skepticism was right, and that
 learning R would require internalizing a lot of unfortunate
 idiosyncrasies that the authors of the language had chosen for their
-own idiosyncratic reasons, and that I would be constantly stumbling over
+own reasons, and that I would be constantly stumbling over
 those incomprehensible limitations and discrepancies between common
-practices and the language developers' decisions. And for that main reason
+practices and the language developers' decisions. And for that
 I didn't want to waste my time.
 
 Bjarne Stroustrup said that there are only two kinds of languages:
@@ -131,12 +131,14 @@ language that everybody complains about.}. The advocates of R sometimes
 admit that perhaps the language isn't perfect, but it contains
 a lot of convenient libraries to make the whole thing worthwhile.
 
-Being a nobody, I was in a gray area where I could complain about
-the language or not. I asked my TA whether he would allow me to choose
+Being a nobody, I was in a rather comfortable position, free
+to decide if I want to complain on the language that I use or not.
+
+I asked my TA whether he would allow me to choose
 another language for doing the assignments, and he agreed.
 
 My language of choice was of course Scheme, or -- more precisely --
-Guile Scheme. I chose Guile Scheme because it has a wonderful trait:
+Guile Scheme. I chose Guile because it has a wonderful trait:
 rather than helplessly complain about features I don't like, I can
 replace them with whatever I find more suitable. If a feature is
 missing from the language, I can add it, rather than swear and curse
@@ -197,12 +199,12 @@ dance, then examples are the dancers.
 
 The whole point of a definition is to create or express
 a notion that can be further used to think about phenomena
-in the real world. Internalizing a definition is not always
+in the world. Internalizing a definition is not always
 a pleasant task, because it requires an intellectual
 effort of focusing and remembering.
 
 Reading programs isn't like reading novels. Because
-of their familiar narrative generality, we typically absorb
+of their familiar narrative specificity, we typically absorb
 stories almost effortlessly. However, comprehending logical abstractions
 requires a very different approach. Well written programs
 are a bit like mathematical textbooks. The latter usually
@@ -242,8 +244,7 @@ being comprehended and modified.
 
 From my experience, this approach dominates,
 not only in industry (which is understandable),
-but also in education (which is harmful to
-industry).
+but also in education (which is harmful to industry).
 }.
 
 \section*{Who should read this pamphlet}
@@ -254,11 +255,10 @@ Although there are certainly computational methods
 involved, this work is really about thinking
 and communicating thoughts.
 
-While it is difficult to imagine anyone who
-would not benefit from the
-knowledge presented here, there are some groups who are particularly
-encouraged to do so. For instance, this text may be of interest
-to philosophers and linguists, as it presents
+While it is difficult to imagine anyone who would not benefit
+from the knowledge presented here, there are some groups who
+are particularly encouraged to do so. For instance, this text
+may be of interest to philosophers and linguists, as it presents
 a linguistic perspective on communicating thoughts
 in a precise manner.
 
@@ -301,6 +301,9 @@ and Aleksander Mohuczy-Dominiak.
 I owe thanks to David Hashe, Robert Różański, Martin Clausen
 and Dave Creelman for pointing out some errors and suggesting
 improvements.
+
+Last but not least, I owe thanks to Lawrence Bottorff and Rick Hanson,
+who volunteered as the editors of this booklet.
 
 \section*{Reporting bugs}
 
@@ -1507,8 +1510,8 @@ The solutions are searched in larger groups called
 \textit{populations}. Each specimen of a population
 is evaluated using a so-called \textit{fitness function},
 which measures the quality of a solution. Rather than
-saying that a given specimen is good or bad, the fitness
-function assigns it a number.
+deciding that a given specimen is either good or bad,
+the fitness function assigns it a grade.
 
 \subsection{Chromosomal crossover}
 
@@ -1548,17 +1551,17 @@ Then we choose a random\footnote{Each occurrence of the
 \texttt{(random n)} expression can be replaced with
 a value randomly chosen from the range $0$ to $n-1$.
 This \textit{indeterminism} is the main reason why
-I prefer the term \texttt{expression-based programming}
-to \texttt{functional programming}. Disallowing such
+I prefer the term \textit{expression-based programming}
+to \textit{functional programming}. Disallowing such
 non-deterministic expressions would make many simple
 things complex.} position from the range between
 $0$ and \textit{the length of chromosome} minus $1$.
 We use the prefix of the \texttt{daddy} chromosome (for
-example, if \texttt{daddy} is \texttt{(a b c d e)}, then
-\texttt{(take daddy 3)} evaluates to \texttt{(a b c)})
+example, if \texttt{daddy} is \texttt{(a\,b\,c\,d\,e)}, then
+\texttt{(take daddy 3)} evaluates to \texttt{(a\,b\,c)})
 and the suffix of the \texttt{mommy} chromosome (similarly,
-if \texttt{mommy} is \texttt{(u v w x y)}, then
-\texttt{(drop mommy 3)} evaluates to \texttt{(x y)}).
+if \texttt{mommy} is \texttt{(u\,v\,w\,x\,y)}, then
+\texttt{(drop mommy 3)} evaluates to \texttt{(x\,y)}).
 
 Finally, we construct a new list from the prefix and the
 suffix.
