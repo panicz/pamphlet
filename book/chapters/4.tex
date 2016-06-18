@@ -32,25 +32,25 @@ A \textit{matrix} is a rectangular array of numbers, for example
 We can use lists of lists of equal length to represent matrices,
 for example
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 '((1 2 3 4)
   (0 4 5 8)
   (0 0 7 6))
-\end{Verbatim}
+\end{Snippet}
 
 \subsection{Matrix addition}
 
 Given a matrix, we can determine its \textit{dimensions}.
 For example, the above matrix is three-by-four.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (dim x)
   (match x
     ((first . rest)
      `(,(length x) . ,(dim first)))
     (_ 
      '())))
-\end{Verbatim}
+\end{Snippet}
 
 Probably the simplest algebraic operation that one can
 conduct on a matrix is \textit{matrix addition}: given
@@ -58,20 +58,20 @@ matrices of the same dimensions, we add each element
 of one matrix to the corresponding element of the
 second matrix:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (M+2 A B)
   (assert (equal? (dim A) (dim B)))
   (map (lambda (a b)
 	 (map + a b))
        A B))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (e.g.
  (M+2 '((1 2 3)
         (4 5 6)) '((1 2 3)
                    (4 5 6))) ===> ((2  4  6)
                                    (8 10 12)))
-\end{Verbatim}
+\end{Snippet}
 
 \subsection{Variadic functions}
 
@@ -89,14 +89,14 @@ We can use the \texttt{M+2} function to perform the
 generalization to the arbitrary number of arguments,
 but no less than one.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (M+ . MM)
   (match MM
     ((M)
      M)
     ((A B . X)
      (apply M+ `(,(M+2 A B) . X)))))
-\end{Verbatim}
+\end{Snippet}
 
 We have used an \textit{improper list} of arguments,
 or a \textit{dotted tail notation}. An improper list
@@ -107,16 +107,16 @@ remaining arguments, so for example if we had no
 \texttt{list} function defined, we could use that
 feature:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (list . items)
   items)
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 ;; or equivalently:
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define list (lambda items items))
-\end{Verbatim}
+\end{Snippet}
 
 Note the use of the \texttt{apply} function. It takes
 a function and a list of arguments, and \textit{applies}
@@ -163,29 +163,29 @@ is the matrix
 The code for constructing the transpose of a matrix is
 a bit tricky:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (transpose M)
   (apply map list M))
-\end{Verbatim}
+\end{Snippet}
 
 To see why it works, let's try to evaluate
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (transpose '((1 2 3)
              (4 5 6)))
-\end{Verbatim}
+\end{Snippet}
 
 According to our definition, it can be rewritten as
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (apply map list '((1 2 3) (4 5 6)))
-\end{Verbatim}
+\end{Snippet}
 
 which -- according to what we said earlier -- can
 be rewritten as
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (map list '(1 2 3) '(4 5 6))
-\end{Verbatim}
+\end{Snippet}
 
 which yields the desired result.
 
@@ -202,7 +202,7 @@ the number of rows of $AB$ is the same as the number
 of rows of $A$, and the number of columns of $AB$
 is the same as the number of columns of $B$.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (M*2 A B)
   (assert (let* (((A-rows A-cols) (dim A))
 		((B-rows B-cols) (dim B)))
@@ -213,7 +213,7 @@ is the same as the number of columns of $B$.
 		  (sum (map * rA cB)))
 		B^T))
 	 A)))
-\end{Verbatim}
+\end{Snippet}
 
 We can extend the \texttt{M*2} to support arbitrary
 number of arguments analogically as we did for \texttt{M+2}.

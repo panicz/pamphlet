@@ -119,7 +119,7 @@ or BMI is \textit{obese} or the glycated hemoglobin level is
 We could define the set of rules for the considered problem
 in the following way.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define underwriter-rules
   '((if (or (is bmi underweight) (is bmi obese)
             (is glycated-hemoglobin low))
@@ -130,7 +130,7 @@ in the following way.
     (if (and (is bmi healthy) (is glycated-hemoglobin normal)
 	     (is blood-pressure normal))
 	(is rating preferred))))
-\end{Verbatim}
+\end{Snippet}
 
 An inquisitive reader could ask an uncomfortable question:
 why should we consider this set of rules as valid, rather
@@ -142,7 +142,7 @@ years of practice.
 Now we need to define what it means for the glycated hemoglobin
 to be normal or low:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define health-categories
   `((bmi (underweight ,(gaussian 9.25 3.0))
 	 (healthy ,(gaussian 21.75 3.0))
@@ -158,7 +158,7 @@ to be normal or low:
     (rating (refuse ,(cone 10.0 5.0))
 	    (standard ,(cone 5.0 5.0))
 	    (preferred ,(cone 1.0 5.0)))))
-\end{Verbatim}
+\end{Snippet}
 
 An inquisitive reader could ask an uncomfortable question:
 what makes us choose these shapes of membership functions
@@ -255,12 +255,12 @@ the membership functions, to appeal to our visual intuitions.
 Also, for the practical purposes it is inevitable to define the
 formulas for the cone and the gaussian curve:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((gaussian center deviation) x)
   (exp (- (/ (square (- x center))
 	     (* 2 (square deviation))))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define ((cone center radius) x)
   (cond ((<= x (- center radius))
 	 0)
@@ -270,7 +270,7 @@ formulas for the cone and the gaussian curve:
 	 (/ (+ (- x) center radius) radius))
 	(else
 	 0)))
-\end{Verbatim}
+\end{Snippet}
 
 In the definition of \texttt{gaussian} we refer to the
 built-in exponential function \texttt{(exp x)}, or $e^{x}$.
@@ -281,7 +281,7 @@ is actually a variant of the \texttt{if} instruction
 that we're already familiar with, and the definition
 could as well have been written using the following form:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((cone center radius) x)
   (if (<= x (- center radius))
     0
@@ -290,7 +290,7 @@ could as well have been written using the following form:
       (if (< x (+ center radius))
         (/ (+ (- x) center radius) radius)
 	0))))
-\end{Verbatim}
+\end{Snippet}
 
 It is apparent that the form using \texttt{if}
 has a more complex structure because of the
@@ -319,7 +319,7 @@ specified categories. It could also be handy if the classes
 were sorted, so that the classes to which a given values
 ``belongs more'' would appear earlier on the list.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (extent #;in-which entity #;belongs-to categories)
   (map (lambda ((property value))
 	 (let* ((category (lookup property categories))
@@ -330,8 +330,8 @@ were sorted, so that the classes to which a given values
 				(lambda ((_ degree-1) (_ degree-2))
 				  (> degree-1 degree-2))))))
        entity))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (e.g.
  (extent '((bmi 29) (glycated-hemoglobin 5) (blood-pressure 20))
          health-categories)
@@ -344,7 +344,7 @@ were sorted, so that the classes to which a given values
                        (slight-overpressure 3.3546262790251185e-4) 
                        (high-overpressure 3.3546262790251185e-4)
                        (normal 1.2664165549094176e-14))))
-\end{Verbatim}
+\end{Snippet}
 
 Probably the most surprising is the use of the \texttt{e.g.} form.
 This is a syntactic extension that serves as a lightweight
@@ -389,7 +389,7 @@ Note the resemblance between the below
 \texttt{satisfaction-degree} function and
 the definition \texttt{satisfied?} from the earlier chapters.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (satisfaction-degree formula interpretation)
   (match formula
     (('and . clauses)
@@ -406,8 +406,8 @@ the definition \texttt{satisfied?} from the earlier chapters.
      (let* ((classifications (lookup property interpretation))
 	    ((extent) (lookup classification classifications)))
        extent))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 ;; where
 (define (maximum list)
   (match list
@@ -422,7 +422,7 @@ the definition \texttt{satisfied?} from the earlier chapters.
      last)
     ((first . rest)
      (min first (minimum rest)))))
-\end{Verbatim}
+\end{Snippet}
 
 We defined two auxiliary functions that designate
 the \texttt{minimum} and \texttt{maximum} of the list,
@@ -443,11 +443,11 @@ of three rules, corresponding to three possible classifications
 of \texttt{rating}: \texttt{standard}, \texttt{perfect} and
 \texttt{refuse}. For example, the first rule said:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (if (or (is bmi underweight) (is bmi obese)
         (is glycated-hemoglobin low))
     (is rating refuse))
-\end{Verbatim}
+\end{Snippet}
 
 
 We need to blend those three rules, based on the extents
@@ -467,17 +467,18 @@ like calculation of the \textit{center of gravity} of the function
 equally arbitrary, none of them having any apparent advantages
 over the another).
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (infer #;from rules #;about entity #;within categories)
   (let* ((judgment (extent entity categories)) 
 	 (conclusions 
-           (map (lambda (('if condition ('is property classification)))
-                  (let* ((degree (satisfaction-degree condition judgment))
-                         (categories (lookup property categories))
-                         ((membership) (lookup classification categories))
-                         (conclusion (clip membership 0 degree)))
-                    `(,property ,conclusion)))
-                rules))
+          (map
+           (lambda (('if condition ('is property classification)))
+             (let* ((degree (satisfaction-degree condition judgment))
+                    (categories (lookup property categories))
+                    ((membership) (lookup classification categories))
+                    (conclusion (clip membership 0 degree)))
+               `(,property ,conclusion)))
+           rules))
 	 (common-subject (equivalence-classes 
 			  (lambda ((property-1 _) (property-2 _))
 			    (eq? property-1 property-2))
@@ -490,7 +491,7 @@ over the another).
                                                functions)))))
 	     `(,property ,composition)))
 	 common-subject)))
-\end{Verbatim}
+\end{Snippet}
 
 The code above is somewhat terse, and requires a bit of explanation.
 First we calculate the \texttt{judgment} using the \texttt{condition}
@@ -536,7 +537,7 @@ observation that it uses the so-called \textit{named-let} construct
 that won't be covered in this pamphlet. The explanation isn't
 difficult to find with Google.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (equivalence-classes equivalent? set)
   (let next-item ((set set)(result '()))
     (match set
@@ -560,7 +561,7 @@ difficult to find with Google.
 		      (next-class `(,present . ,past) this next)))
                     )))
              )))))))
-\end{Verbatim}
+\end{Snippet}
 
 Having the conclusions split into \texttt{equivalence-classes}
 of conclusions that regard the same \texttt{property}, we create
@@ -572,11 +573,11 @@ functions.
 The only thing that may be unknown at this point is what it means
 to \texttt{clip} a function. This is rather straightforward:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((clip function bottom top) x)
   (assert (<= bottom top))
   (max bottom (min top (function x))))
-\end{Verbatim}
+\end{Snippet}
 
 The \texttt{infer} function returns a list of form
 \texttt{((property function) ...)}. In order to get
@@ -588,7 +589,7 @@ computing the \texttt{center\--of\--gravity}. This
 method is based on \textit{numerical integration}
 that will not be covered here.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((bottom 0)
 	       (top 100)
 	       (step 0.1))
@@ -603,7 +604,7 @@ that will not be covered here.
   (if (> bottom top)
     '()
     `(,bottom . ,(range #;from (+ bottom step) #;to top #;by step))))
-\end{Verbatim}
+\end{Snippet}
 
 The surprising thing is the use of the \texttt{with-default} derived
 form. It is used to give some default values to certain names,
@@ -612,16 +613,16 @@ in one of the later chapters.
 
 Finally, we can evaluate the expression
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (let* ((conclusions (infer #;from underwriter-rules 
 				  #;about '((bmi 29) 
 					    (glycated-hemoglobin 5) 
 					    (blood-pressure 20))
-					  #;within health-categories)))
+				  #;within health-categories)))
   (map (lambda ((property function))
 	 `(,property ,(center-of-gravity function)))
        conclusions))
-\end{Verbatim}
+\end{Snippet}
 
 to find out that the \texttt{rating} received by our candidate is $7.46$.
 In other words, we passed along some numbers to receive yet another number.

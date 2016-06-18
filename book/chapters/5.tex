@@ -36,7 +36,7 @@ altogether and choose whichever product of probabilities
 turns out to be the greatest. For example, if our data
 set has the form
 
-\begin{Verbatim}
+\begin{Snippet}
 (define computer-purchase
   '((age    income student credit-rating buys)
     (31..40 high   no      fair           yes)
@@ -47,7 +47,7 @@ set has the form
     (<=30   medium no      fair            no)
     (<=30   low    yes     fair            no)
    ))
-\end{Verbatim}
+\end{Snippet}
 
 and we are to predict the class of a new record
 \texttt{(>40 low no fair ?)}, then we first compute
@@ -109,7 +109,7 @@ from the specific universe, for example \textit{the age
 of a person}. For this purpose, we will define the
 function \texttt{the}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((universe '(()())))
   (define (the property #;of item)
     (let* (((names . things) (specific universe))
@@ -119,7 +119,7 @@ function \texttt{the}:
       (if (not index)
 	  (throw 'not-found property names))
       (list-ref item index))))
-\end{Verbatim}
+\end{Snippet}
 
 We have used the \texttt{with-default} derived form
 that we have also used in the definition of the
@@ -135,10 +135,10 @@ override the desired value somehow. For this purpose,
 we will use another derived form called \texttt{specify}.
 
 For example, the expression
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (specify ((universe '((name age))))
   (the 'age #;of '(George 48)))
-\end{Verbatim}
+\end{Snippet}
 evaluates to \texttt{48}.
 
 If we wanted to express the naive Bayes classifier,
@@ -147,17 +147,17 @@ The proposition in the form $P(\phi)$ can be expressed
 using regular functions (i.e. lambdas) ranging the
 objects in the universe, for example
 $P(\mathtt{buys}=\mathtt{yes})$ could be paraphrased as
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (probability 
   (lambda (item) 
     (eq? (the 'buys item) 'yes)))
-\end{Verbatim}
+\end{Snippet}
 
 Likewise, we could define \texttt{probability} as
 a variadic function, treating all the additional
 arguments as the \textit{given} propositions:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((universe '(()())))
   (define (probability proposition #;given . circumstances)
     (let* (((names . things) (specific universe))
@@ -165,7 +165,7 @@ arguments as the \textit{given} propositions:
 				things)))
       (/ (count proposition known-world)
 	 (length known-world)))))
-\end{Verbatim}
+\end{Snippet}
 
 where \texttt{compose} is a function that takes arbitrary
 number of functions and returns their \textit{composition}
@@ -178,10 +178,10 @@ the convention that the unknown property (whose value
 is supposed to be used) will be represented using the
 question mark symbol. Therefore we expect that the
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (specify ((universe computer-purchase))
   (naive-bayes '(>40 low no fair ?)))
-\end{Verbatim}
+\end{Snippet}
 
 will try to classify the last entry in the tuple, i.e.
 the \texttt{buys} property. Therefore we may need to be able
@@ -189,18 +189,19 @@ to retrieve the name of the unknown property, as well
 as the names of the known properties (note that we assume
 that there's only one unknown per tuple):
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (without-default ((universe '(()()))
                   (unknown? (lambda (x) (eq? x '?))))
   (define (unknown-label+rest tuple)
     (let* (((header . data) (specific universe))
 	   (unknown/index (list-index (specific unknown?) tuple))
 	   (unknown-property (list-ref header unknown/index))
-	   (known-properties (filter (lambda (label)
-				       (not (eq? label unknown-property)))
+           (known-properties (filter (lambda (label)
+                                       (not (eq? label
+                                                 unknown-property)))
 				     header)))
       (values unknown-property known-properties))))
-\end{Verbatim}
+\end{Snippet}
 
 The novel thing is the use of the function \texttt{values}.
 One of the most controversial features of Scheme is the functions'
@@ -216,7 +217,7 @@ also be helpful if we were able to get all the possible values
 of a given property within a universe, in order to compute
 the appropriate conditional and unconditional probabilities:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((universe '(()())))
   (define (column name)
     (let* (((header . data) (specific universe))
@@ -227,12 +228,12 @@ the appropriate conditional and unconditional probabilities:
 
   (define (possible-values attribute)
     (delete-duplicates (column attribute))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (e.g.
  (specify ((universe computer-purchase))
    (possible-values 'age)) ===> (<=30 31..40 >40))
-\end{Verbatim}
+\end{Snippet}
 
 Note that we also defined a \texttt{column} auxiliary function
 that allows us to project the universe onto one of its dimensions.
@@ -240,7 +241,7 @@ That function will also be used later.
 
 We can now define the Naive Bayes of a record in the following way:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((universe '(()())))
   (define (naive-bayes tuple)
     (let* ((unknown-property known-properties 
@@ -266,7 +267,7 @@ We can now define the Naive Bayes of a record in the following way:
                                (partial-conditional-probabilities
                                 class)))
               classes))))
-\end{Verbatim}
+\end{Snippet}
 
 In the definition, we introduced two auxiliary definitions
 of \texttt{unconditional\--probability} of belonging to a \texttt{class}
@@ -307,7 +308,7 @@ reject as many alternative options as possible.
 
 For example, let's take a look at this slightly larger version
 of the \texttt{computer\--purchase} database:
-\begin{Verbatim}
+\begin{Snippet}
 (define computer-purchase
   '((age     income student credit-rating buys)
     (<=30    high   no      fair            no)
@@ -325,7 +326,7 @@ of the \texttt{computer\--purchase} database:
     (31...40 high   yes     fair           yes)
     (>40     medium no      excellent       no)
    ))
-\end{Verbatim}
+\end{Snippet}
 
 We can notice, that if a person's \texttt{age} is \texttt{<=30},
 then that person buys a computer only if she or he is a student
@@ -359,13 +360,13 @@ tree with labeled nodes is to use a list of the form
 are also trees. The only exception is that we represent
 leaves as atomic objects. So for example, the above
 tree could be written as the following Scheme expression:
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (age (<=30 (student (no no)
                     (yes yes)))
      (31...40 yes)
      (>40 (credit-rating (fair yes)
                          (excellent no))))
-\end{Verbatim}
+\end{Snippet}
 
 It may not be immediately apparent that those two objects
 are \textit{isomorphic}, and besides the former is much more
@@ -374,7 +375,7 @@ Scheme expressions to pictures in a systematic way. This shouldn't
 be particularly difficult -- the above tree was generated
 in \LaTeX{} using the \textit{qtree} package from the following
 code:
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 \Tree [.age 
   [.<=30 
     [.student 
@@ -385,7 +386,7 @@ code:
     [.credit-rating 
       [.fair yes ]  
       [.excellent no ]  ]  ]  ]
-\end{Verbatim}
+\end{Snippet}
 
 (Note the resemblance). Before we create our converter, however,
 we should note one thing: although for simple examples such as
@@ -394,13 +395,13 @@ which label should be assigned to a given data tuple, our
 database could contain a few tuples with the same values but
 different labels, like:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
   ...
   (<=30 high no fair no)
   ...
   (<=30 high no fair yes)
   ...
-\end{Verbatim}
+\end{Snippet}
 
 In such situations, we would rather that the leaf contained
 the \textit{probability distribution} of belonging to certain
@@ -428,11 +429,11 @@ a symbol or a vector, and in the latter case we would
 like to generate a table containing the information from
 that vector. The probability table will have the form
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 #((class-1 probability-1)
   (class-2 probability-2)
   ...)
-\end{Verbatim}
+\end{Snippet}
 
 where \texttt{\#(elements ...)} is a legitimate Scheme
 notation for vectors.
@@ -440,7 +441,7 @@ notation for vectors.
 The code for converting Scheme objects to \LaTeX{} trees
 and tabulars looks as follows:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (latex/tabular rows)
   (let* ((columns (length (first rows))))
     (string-append
@@ -453,8 +454,8 @@ and tabulars looks as follows:
 	   rows)
       " \\\\ \\hline ")
      " \\end{tabular}")))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (latex/qbranch tree)
   (match tree
     ((node . branches)
@@ -469,15 +470,15 @@ and tabulars looks as follows:
       "} ] "))
     (leaf
      (->string leaf))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (latex/qtree tree)
  (string-append 
   "\\begin{figure}"
   "\\Tree "
   (latex/qbranch tree)
   "\\end{figure}"))
-\end{Verbatim}
+\end{Snippet}
 
 The \texttt{latex/qtree} interface is a simple wrapper on the
 \texttt{latex/qbranch} function that ``does all the work'', i.e.
@@ -517,15 +518,15 @@ and removing the columns containing the attributes that
 have already been considered. The smaller databases
 created in this way will be called \texttt{slices}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (drop-column database label)
   (let* (((header . data) database)
 	 (index (list-index (lambda (name) (eq? name label)) header)))
     (map (lambda (row)
 	   (skip index row))
 	 database)))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (slices #;of database #;on attribute)
   (specify ((universe database))
     (let* (((names . things) database)
@@ -539,7 +540,7 @@ created in this way will be called \texttt{slices}:
                 (drop-column `(,names . ,peers) attribute)))
             classes)
        classes))))
-\end{Verbatim}
+\end{Snippet}
 
 The \texttt{(skip i l)} is a library function that returns a copy
 of list \texttt{l} without its \texttt{i}-th element.
@@ -552,7 +553,7 @@ the former case we know what the node value should be, but in
 the latter we need to construct the probability distribution
 table:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (probability-table ((label) . column))
   (specify ((universe `((,label) . ,column)))
     (let* ((classes (possible-values label)))
@@ -561,8 +562,8 @@ table:
 				      (eq? (the label item)
 					   class)))))
 	   classes))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (decision-tree #;of data #;for label)
   (match data
     (((last) . _)
@@ -588,7 +589,7 @@ table:
                                                           label))))))
                            classes sections)))
        `(,attribute . ,branches)))))
-\end{Verbatim}
+\end{Snippet}
 
 What's left before our code can actually work is to define
 the \texttt{information\--gain} somehow. There are many ways
@@ -599,13 +600,13 @@ although I need to note that I do not comprehend it fully.
 We start off by defining the measure of information
 contribution of given proposition:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (information proposition #;given . circumstances)
   (let ((p (apply probability proposition circumstances)))
     (if (zero? p)
         0.0
         (- (* p (log p))))))
-\end{Verbatim}
+\end{Snippet}
 
 As we can see, the notion of \textit{information} is defined
 in terms of \texttt{probability}, so it needs a specific
@@ -621,7 +622,7 @@ $\infty$ is not a number.
 The notion of \texttt{information} is used in the definition
 of \texttt{information-gain}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (information-gain attribute target-class)
   (let* ((classes (possible-values target-class)))
     (- (sum (map (lambda (class)
@@ -630,8 +631,8 @@ of \texttt{information-gain}:
 				       class))))
 		 classes))
 	 (attribute-entropy attribute target-class))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 ;; where
 (define (attribute-entropy attribute target-class)
   (let* ((classes (possible-values target-class))
@@ -652,7 +653,7 @@ of \texttt{information-gain}:
 				        option)))))
 			  classes)))
 	      options))))
-\end{Verbatim}
+\end{Snippet}
 The definitions are rather simple structurally, and the
 only problem with their comprehension may stem from the
 lack of understanding of the underlying theory.
@@ -667,7 +668,7 @@ a single value, we simply assign it to our tuple.
 Otherwise it is a probability distribution table, and
 we should draw lots according to that distribution:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (draw-lots probability-table)
   (let* ((((classes probabilities) ...) probability-table)
 	 (cumulative-distribution (scan + 0 probabilities))
@@ -677,7 +678,7 @@ we should draw lots according to that distribution:
 				    (zip classes 
 					 cumulative-distribution))))
     class))
-\end{Verbatim}
+\end{Snippet}
 
 we used here the \texttt{scan} library function for calculating
 \textit{prefix sum}. Assuming that \texttt{(random 1.0)} returns
@@ -686,7 +687,7 @@ as \textit{inverse transform sampling}.
 
 The code for actually making a decision based on the tree
 isn't particularly complicated.
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((universe '(()())))
 
   (define (decide/tree tuple)
@@ -706,7 +707,7 @@ isn't particularly complicated.
 	(draw-lots probability-table))
        (_
 	tree))))
-\end{Verbatim}
+\end{Snippet}
 The \texttt{decide/tree} procedure constructs a tree for the
 unknown label, and then refers to the \texttt{tree-decide}
 function that actually traverses the path on the tree by
@@ -768,10 +769,10 @@ taking the majority of them.
 With regard to the distance, we will be using the
 \texttt{euclid-distance} function:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (euclid-distance a b)
   (sqrt (sum (map square (map - a b)))))
-\end{Verbatim}
+\end{Snippet}
 
 Note that -- in addition to the built-in \texttt{sqrt} function
 for computing the square root of a number, we have used two
@@ -789,7 +790,7 @@ we will compute the distance and attach that information to
 database before sorting -- that way we will avoid computing
 the value of the distance function in each comparison.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((nearest-neighbours k #;in data) #;of sample)
   (let* ((measured (map (lambda ((values ... label))
 			  `(,(euclid-distance values sample) 
@@ -800,13 +801,13 @@ the value of the distance function in each comparison.
 			  (< distance-1 distance-2))))
 	 (sorted (map (lambda ((distance . data)) data) sorted+)))
     (take sorted k)))
-\end{Verbatim}
+\end{Snippet}
 
 Lastly, we need to choose the label such that the majority
 of the points bear it. We will use the \texttt{equivalence-classes}
 operation to facilitate that:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (dominant-label labeled-points)
   (let* ((classes (equivalence-classes
                    (lambda ((_ ... label-1) (_ ... label-2))
@@ -815,15 +816,15 @@ operation to facilitate that:
          (biggest (apply argmax length classes))
          (((_ ... label) . _) biggest))
     label))
-\end{Verbatim}
+\end{Snippet}
 
 The only thing that's left is to bring those ideas together:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (((classify/knn k) universe) sample)
   (let* (((header . data) universe))
     (dominant-label ((nearest-neighbours k data) sample))))
-\end{Verbatim}
+\end{Snippet}
 
 \section{Quantization of numerical data}
 
@@ -864,7 +865,7 @@ that assign a point the name of its range).
 
 This is how this works in practice:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (with-default ((intervals 5)
 	       (universe '(()())))
   (define ((quantizer label) value)
@@ -886,13 +887,13 @@ This is how this works in practice:
 	`(,@(map (lambda (quantize value) 
 		   (quantize value))
 		 quantizers values) ,label)))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (quantize universe)
   (let (((header . data) universe))
     (specify ((universe universe))
       `(,header . ,(map (quantize-item) data)))))
-\end{Verbatim}
+\end{Snippet}
 
 For creating the names of the labels, we have used library
 functions \texttt{symbol-append} and \texttt{number->symbol},
@@ -905,9 +906,9 @@ it will be labeled as \texttt{<22.0}.
 Of course, we need to create a quantized version of a universe
 in order to further operate on it, for example:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define iris/quantized (quantize iris))
-\end{Verbatim}
+\end{Snippet}
 
 \section{Evaluating classifiers}
 
@@ -932,7 +933,7 @@ a fraction that expresses how big should be the training set
 compared to verification set, and returns some detailed
 information regarding the confusions made.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (evaluate-strategy strategy training-proportion data)
   (assert (< 0 training-proportion 1))
   (let* (((header . data) data)
@@ -962,7 +963,7 @@ information regarding the confusions made.
 				 (not (eq? guess real)))
 			       classified)
 			(length classified))))))
-\end{Verbatim}
+\end{Snippet}
 
 Despite its length, the code is rather simple. The only new
 thing here is the use of the library function \texttt{concatenate}
@@ -992,7 +993,7 @@ based on the verification set and gathering them in the
 \texttt{confusion-matrix} procedure that makes a summary of
 errors:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (confusion-matrix classified-data)
   (let* ((rows (equivalence-classes (lambda ((a . _)(b . _))
 				      (eq? a b))
@@ -1011,7 +1012,7 @@ errors:
 				   (/ classified total)))))
 		  classes)))
 	 rows)))
-\end{Verbatim}
+\end{Snippet}
 
 As we said earlier, the use of the evaluator requires us
 to stick to certain conventions -- the strategy needs to
@@ -1020,17 +1021,17 @@ for a single sample. The \texttt{classify/knn} function
 already conforms to that convention (once the \texttt{k}
 is settled), but the other two classifiers do not, and
 therefore we need to adopt them:
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((classify/naive-bayes data) sample)
   (specify ((universe data))
     (naive-bayes `(,@sample ?))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define ((classify/decision-tree data) sample)
   (specify ((universe data))
     (let* ((tree (decision-tree data 'class)))
       (tree-decide tree sample))))
-\end{Verbatim}
+\end{Snippet}
 
 Note that the \texttt{classify/decision-tree} will
 misbehave under the substitutional model of computation,
@@ -1042,9 +1043,9 @@ here.
 Finally, we can use our evaluator to verify the quality
 of our classifiers:
 
-\begin{Verbatim}
+\begin{Snippet}
 (evaluate-strategy classify/decision-tree 7/10 iris/quantized)
-\end{Verbatim}
+\end{Snippet}
 
 \section{Clusterization}
 In the previous sections we've been dealing with a task
@@ -1072,7 +1073,7 @@ that we can select a value from within that range.
 Then, we simply generate a list of points of the desired
 length:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (random-centers k data)
   (let* ((upper (apply map max data))
 	 (lower (apply map min data)))
@@ -1081,7 +1082,7 @@ length:
 			      (+ lower (random (- upper lower))))
 			    lower
 			    upper)))))
-\end{Verbatim}
+\end{Snippet}
 
 Once you get used to using \texttt{map}, \texttt{apply} and
 \texttt{lambda}, the code is very straightforward and needs
@@ -1092,7 +1093,7 @@ The assignment of samples to the alleged cluster centers
 is also very simple, once you get familiar with the notion
 of \texttt{equivalence-classes}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (classify data centroids)
   (let* ((nearest-centroid (lambda (point)
 			     (apply argmin 
@@ -1105,12 +1106,12 @@ of \texttt{equivalence-classes}:
 			       (nearest-centroid b)))
 		    data)))
     clusters))
-\end{Verbatim}
+\end{Snippet}
 
 When we put those two above together, we get the
 clusterization routine:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (clusterize data k)
   (let* ((centroids (random-centers k data))
          (clusters (classify data centroids))
@@ -1121,7 +1122,7 @@ clusterization routine:
     (if (equal? centroids new-centroids)
 	(values clusters new-centroids)
 	(clusterize data new-centroids))))
-\end{Verbatim}
+\end{Snippet}
 
 Probably the most surprising part is the 
 \texttt{(filter pair? clusters)} expression -- its purpose
@@ -1131,10 +1132,10 @@ sense (so effectively the final number of clusters can be
 smaller than the initially assumed). The \texttt{mean} function
 is obviously defined as
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (mean list)
   (/ (sum list) (length list)))
-\end{Verbatim}
+\end{Snippet}
 
 We can observe the result of clusterization on the following
 picture. Compared to the original labeling, only one label

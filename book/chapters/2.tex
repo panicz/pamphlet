@@ -60,14 +60,14 @@ two chromosomes, splits them at a random point and returns
 a new one composed of the prefix of the first one and
 the suffix of the second:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (cross-over daddy mommy)
   (assert (= (length daddy) (length mommy)))
   (let* ((position (random (length daddy)))
 	 (sperm (take daddy position))
 	 (ovum (drop mommy position)))
     `(,@sperm ,@ovum)))
-\end{Verbatim}
+\end{Snippet}
 
 Of the things that deserve attention, the first one is the
 presence of an \textit{assertion}. An assertion essentially
@@ -140,7 +140,7 @@ that a chromosome of a specimen is mutated.
 The social perspective on the ceremony of copulation can
 be expressed in Scheme in the following way:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (procreate population social-status)
   (let* ((census (map (lambda (specimen)
 			`(,(social-status specimen) . ,specimen))
@@ -157,7 +157,7 @@ be expressed in Scheme in the following way:
 				       (list-ref population woman)))
 			 males females)))
      (map (on-average-once-in size (mutate #;using not)) offspring)))
-\end{Verbatim}
+\end{Snippet}
 
 Note that the arguments to \texttt{lambda} provided to the \texttt{sort}
 function are destructured (pattern-matched) in place. This is a convenient
@@ -183,12 +183,12 @@ from $0$) and returns the $i$-th element of the list.
 The procedure \texttt{biased-random-indices} generates a list of
 indices with the desired distribution:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (biased-random-indices size)
   (if (= size 0)
       '()
       `(,(random size) . ,(biased-random-indices (- size 1)))))
-\end{Verbatim}
+\end{Snippet}
 
 The length of the generated list will be \texttt{size}.
 Furthermore, the index $0$ is guaranteed to appear on the list
@@ -212,7 +212,7 @@ and the (recursively shuffled) sub-lists are swapped with
 a $50\%$ probability. Otherwise the shuffled list is
 identical with the original one.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (shuffle l)
   (match (length l)
     (0 '())
@@ -221,7 +221,7 @@ identical with the original one.
 	 (if (= (random 2) 1)
 	     `(,@(shuffle right) ,@(shuffle left))
 	     `(,@(shuffle left) ,@(shuffle right)))))))
-\end{Verbatim}
+\end{Snippet}
 
 The last thing that requires an explanation is the mutation.
 We wish it to occur on average once per generation, therefore
@@ -229,23 +229,23 @@ we define a function that applies a given function with
 a probability $\frac{1}{n}$ for a given $n$, where $n$ is
 a positive integer:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((on-average-once-in n action) arg)
   (assert (and (integer? n) (> n 0)))
   (if (= (random n) 0)
       (action arg)
       arg))
-\end{Verbatim}
+\end{Snippet}
 
 The \texttt{action} of \texttt{mutation} that we wish to apply
 inverts the random chromosome:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((mutate how) specimen)
   (let* ((n (random (length specimen)))
 	 (mutation (how (list-ref specimen n))))
     (alter #;element-number n #;in specimen #;with mutation)))
-\end{Verbatim}
+\end{Snippet}
 
 The meaning \texttt{(alter n l value)} is a list that contains
 all the same elements as \texttt{l}, except its \texttt{n}-th
@@ -261,7 +261,7 @@ entirely up to the creator to decide many cycles of lives
 and deaths will the world witness, how complex can its inhabitants
 be, and how many of them will be brought to existence.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (evolve population #;towards criterion #;for iterations)
   (assert (and (integer? iterations) (>= iterations 0)))
   (if (<= iterations 0)
@@ -269,35 +269,35 @@ be, and how many of them will be brought to existence.
       (evolve (procreate population criterion)
               #;towards criterion 
               #;for (- iterations 1))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (generate-specimen dimension)
   (generate-list dimension (lambda () (= (random 2) 0))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (generate-population size dimension)
   (generate-list size (lambda () (generate-specimen dimension))))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 (define (optimize dimension population-size iterations criterion)
   (let* ((population (generate-population population-size dimension))
 	 (modern-society (evolve population #;towards criterion 
 				 #;for iterations)))
     (argmax criterion modern-society)))
-\end{Verbatim}
+\end{Snippet}
 
 The \texttt{generate-list} procedure takes a \texttt{lambda} expression
 of no arguments that evaluates nondeterministically to some value
 (in our case, it is either logical truth or logical falsehood)
 and generates a list containing a specified number of results of
 such evaluation:
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (generate-list n generator)
   (assert (and (integer? size) (>= size 0)))
   (if (= n 0)
       '()
       `(,(generator) . ,(generate-list (- n 1) generator))))
-\end{Verbatim}
+\end{Snippet}
 
 Lastly, the \texttt{argmax} is a library function that takes
 a measure function and a list and evaluates to the element of the
@@ -343,13 +343,13 @@ disjunctive clause.
 This may sound complicated, so it can be instructive to see
 an example. The file
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 c simple_v3_c2.cnf
 c
 p cnf 3 2
 1 -3 0
 2 3 -1 0
-\end{Verbatim}
+\end{Snippet}
 
 would correspond to the formula 
 
@@ -392,13 +392,13 @@ We shall gather the input lines from the list. The
 function terminates when it approaches an \textit{end-of-file
 object}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (input-lines)
   (let* ((line (read-line (current-input-port))))
     (if (eof-object? line)
 	'()
 	`(,line . ,(input-lines)))))
-\end{Verbatim}
+\end{Snippet}
 
 We shall ignore all the lines that contain anything else
 than (possibly negative) numbers separated with white-spaces
@@ -408,11 +408,11 @@ a new list that contains only those elements from the old
 list that satisfy the predicate (preserving the order).
 Thus, the expression
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (filter (lambda (line)
           (string-match "^\\s*(-?[0-9]+\\s+)+0\\s*$" line))
         (input-lines))
-\end{Verbatim}
+\end{Snippet}
 
 will evaluate to a list that contains only the meaningful
 lines. Note that we used the \texttt{string-match} procedure
@@ -450,25 +450,25 @@ Lastly, we need to convert the number to an expression,
 that is -- either a symbol or a negation of a symbol.
 We can therefore define:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (number->expression number)
   (if (negative? number)
     `(not ,(number->expression (- number)))
      ((numbered-symbol 'x) number)))
-\end{Verbatim}
+\end{Snippet}
 
 where \texttt{numbered-symbol} could be defined in
 terms of the primitive Scheme functions:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((numbered-symbol symbol) number)
   (symbol-append symbol (string->symbol (number->string number))))
-\end{Verbatim}
+\end{Snippet}
 
 Putting it all together, we can define our DIMACS-CNF
 processor:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (process-dimacs-cnf)
   (define (disjunction line)
     (let* (((strings ... "0") (filter (lambda (s)
@@ -483,7 +483,7 @@ processor:
                                 line))
 			     (input-lines))))
     `(and . ,(map disjunction data-lines))))
-\end{Verbatim}
+\end{Snippet}
 
 The only thing that can be unobvious is binding the value
 of the expression \texttt{(string-split line \#\char`\\space)}
@@ -493,11 +493,11 @@ be \texttt{"0"}) from the result of \texttt{string-split}.
 The \texttt{...} operator for the pattern matcher behaves
 in a complementary way to the \texttt{unquote-splicing}
 operator, so for example, in the expression
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (match '(1 2 3 4 5 6)
   ((a b c ... z))
   `(,a ,b ,@c ,z))
-\end{Verbatim}
+\end{Snippet}
 \texttt{a},\texttt{b} and \texttt{z} will be bound with
 \texttt{1}, \texttt{2} and \texttt{6}, respectively, and the
 \texttt{c} name will be bound with the list \texttt{(3 4 5)},
@@ -507,11 +507,11 @@ appear more than once in a list, so for example patterns like
 \texttt{(a ... k ... z)} are illegal, as they would result
 in an ambiguous match. The \texttt{...} operator has
 another magical property -- in the pattern
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (match '((a . 1) (b . 2) (c . 3))
   (((keys . values) ...)
    `(,keys ,values)))
-\end{Verbatim}
+\end{Snippet}
 the \texttt{keys} symbol will be bound with the list \texttt{(a b c)},
 and the \texttt{values} symbol -- with \texttt{(1 2 3)}, so the
 list subjected to pattern matching will be \textit{unzipped}.
@@ -539,7 +539,7 @@ values of subsequent atomic propositions for the valuations
 We need to know how many distinct atomic formulas are there
 in the main formula:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (atomic-formulas proposition)
   (match proposition
     (('not clause)
@@ -548,7 +548,7 @@ in the main formula:
      (delete-duplicates (append-map atomic-formulas clauses)))
     ((? symbol?)
      `(,proposition))))
-\end{Verbatim}
+\end{Snippet}
 
 The code uses two library functions, \texttt{delete-duplicates}
 (that does exactly what it says\footnote{
@@ -566,23 +566,24 @@ The structure of the formulas -- the conjunctive normal
 form -- also prompts us with the fitness function: that
 will be the number of the satisfied disjunctive sub-clauses.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (number-of-satisfied-subformulas #;of cnf #;for chromosome)
-  (let* ((variables (generate-variables #;from 1 #;to (length chromosome)))
+  (let* ((variables (generate-variables #;from 1
+                                        #;to (length chromosome)))
          (valuation (map cons variables chromosome))
          (('and . or-clauses) cnf))
     (count (lambda (subformula)
              (satisfied? subformula #;under valuation))
            or-clauses)))
-\end{Verbatim}
-\begin{Verbatim}[samepage=true]
+\end{Snippet}
+\begin{Snippet}
 ;; where
 (define (generate-variables #;from first to #;last)
   (if (> first last)
     '()
     `(,((numbered-symbol 'x) first) 
       . ,(generate-variables #;from (+ first 1) #;to last))))
-\end{Verbatim}
+\end{Snippet}
 
 Here, we use the library function \texttt{count} that takes
 a predicate and a list and returns the number of elements
@@ -593,7 +594,7 @@ and enjoy the show\footnote{The file ``dubois20.cnf'',
 among others, was obtained from the website
 \url{http://people.sc.fsu.edu/~jburkardt/data/cnf/cnf.html}.}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (let* ((formula (with-input-from-file "dubois20.cnf" 
                   process-dimacs-cnf))
        (dimension (length (atomic-formulas formula)))
@@ -601,4 +602,4 @@ among others, was obtained from the website
                   (number-of-satisfied-subformulas #;of formula
                                                #;for chromosome))))
   (optimize dimension 160 100 measure))
-\end{Verbatim}
+\end{Snippet}

@@ -86,7 +86,7 @@ computes \textbf{a sum of squares of initial seven prime numbers}.
 The imperative program that does this could look as follows:
 
 %\lstset{language=Python}
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 
 counter := 7
 number := 0
@@ -97,7 +97,7 @@ while(counter > 0):
         counter := counter - 1
     number := number + 1
 
-\end{Verbatim}
+\end{Snippet}
 %\lstset{language=Lisp}
 
 After its execution, the \texttt{sum} variable will contain the
@@ -282,14 +282,14 @@ it provides means for defining new notions.
 Paraphrasing our construction of ``least $N$ prime numbers 
 greater than $M$'' from previous section, we can write:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (prime-numbers amount from)
   (if (= amount 0)
     '()
     (if (prime? from)
       (cons from (prime-numbers (- amount 1) (+ from 1)))
       (prime-numbers amount (+ from 1)))))
-\end{Verbatim}
+\end{Snippet}
 
 Although conceptually we present nothing new here compared to
 the previous section, there are a few formal elements that need
@@ -334,11 +334,11 @@ In the first case, the value of the \texttt{if} expression
 becomes \texttt{'()}, that is -- an empty sequence. In the
 second case, the expression becomes:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (if (prime? from)
   (cons from (prime-numbers (- amount 1) (+ from 1)))
   (prime-numbers amount (+ from 1)))
-\end{Verbatim}
+\end{Snippet}
 
 This, again, is an \texttt{if} expression. Its \texttt{<condition>}
 clause takes form \texttt{(prime? from)}. The intent is, that
@@ -398,14 +398,14 @@ that a number cannot be divisible by a number greater than itself.
 Hence, in order to find a list of numbers, we can try all numbers
 starting from 1.
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (divisors n from)
   (if (> from n)
     '()
     (if (= (remainder n from) 0)
       (cons from (divisors n (+ from 1)))
       (divisors n (+ from 1)))))
-\end{Verbatim}
+\end{Snippet}
 
 This definition has a very similar structure to the previous one.
 We used some new elementary functions, namely the comparison predicate
@@ -421,10 +421,10 @@ of the prefix notation.
 This problem could be solved by adding another pair of parentheses
 in our definition:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((divides? a) b)
   (= (remainder a b) 0))
-\end{Verbatim}
+\end{Snippet}
 
 Now it should be clearer that we ask whether \texttt{b} divides
 \texttt{a}.
@@ -440,10 +440,10 @@ number, we can check whether the number is a prime simply by comparing
 its list of divisors with a list containing only the number 1 and
 the considered number itself:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (prime? number)
   (equal? (divisors number 1) (list 1 number)))
-\end{Verbatim}
+\end{Snippet}
 
 We have used here two new primitive functions: \texttt{equal?} and
 \texttt{list}. They are not entirely primitive, as they could be
@@ -500,32 +500,32 @@ of the expression by substituting the complex notion of
 \texttt{divisors} with its definition, replacing any formal
 parameters with their values. Thus we obtain:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (if (> 1 4)
   '()
   (if (= (remainder 4 1) 0)
     (cons 1 (divisors 4 (+ 1 1)))
     (divisors n (+ 1 1))))
-\end{Verbatim}
+\end{Snippet}
 
 We see that the first condition is clearly false, because $1$
 is smaller than $4$. We can therefore substitute the
 conditional with its \texttt{<else>} branch:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (if (= (remainder 4 1) 0)
   (cons 1 (divisors 4 (+ 1 1)))
   (divisors n (+ 1 1))))
-\end{Verbatim}
+\end{Snippet}
 
 If we substitute the expression \texttt{(remainder 4 1)} with
 its value, i.e. the number $0$, it is apparent that the
 condition \texttt{(= 0 0)} is true, so we can replace the
 conditional with its \texttt{<then>} branch:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (cons 1 (divisors 4 (+ 1 1)))
-\end{Verbatim}
+\end{Snippet}
 
 It is also clear that \texttt{(+ 1 1)} is $2$. We therefore
 go back to the initial situation, with the difference that
@@ -535,34 +535,34 @@ and its \texttt{from} argument has value $2$ instead of $1$.
 By expanding the expression with its connotation and performing
 appropriate reductions, we obtain the following form:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (cons 1 (cons 2 (divisors 4 3)))
-\end{Verbatim}
+\end{Snippet}
 
 In next iteration of substitutions and reductions it will
 turn out that the remainder of $4$ divided by $3$ is non-zero,
 so the above expression can be rewritten as:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (cons 1 (cons 2 (divisors 4 4)))
 
 
-\end{Verbatim}
+\end{Snippet}
 
 As the remainder of the division of $4$ by $4$ is 0, we
 rewrite the above as:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (cons 1 (cons 2 (cons 4 (divisors 4 5)))
-\end{Verbatim}
+\end{Snippet}
 
 Now the \texttt{<condition>} of the outer \texttt{if} form
 is satisfied, so the \texttt{(divisors 4 5)} expression evaluate
 to empty sequence to yield:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (cons 1 (cons 2 (cons 4 '()))
-\end{Verbatim}
+\end{Snippet}
 
 which eventually evaluates to the sequence \texttt{(1 2 4)}.
 The assumptions under which we performed the above inference
@@ -587,10 +587,10 @@ is a square of the corresponding element of $Y$.
 A square of a number is -- by definition -- that number multiplied
 by itself:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (square number)
   (* number number))
-\end{Verbatim}
+\end{Snippet}
 
 To make it clear what the squares of a sequence of numbers are, or
 rather to explain how they are constructed, we need to notice that
@@ -605,12 +605,12 @@ remaining elements of the input sequence (this statement sounds
 very tautological indeed, but we will see shortly how to deal
 with that)
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (squares numbers)
   (if (eq? numbers '())
     '()
     (cons (square (car numbers)) (squares (cdr numbers)))))
-\end{Verbatim}
+\end{Snippet}
 
 The most important thing about this definition is that it reveals
 the means for destructuring lists. For historical reasons, the
@@ -646,12 +646,12 @@ have a function, let's call it \texttt{plural}, that would take
 a function of one argument, and return a function of list of
 arguments:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define ((plural concept) list)
   (if (eq? list '())
     '()
     (cons (concept (car list)) ((plural concept) (cdr list)))))
-\end{Verbatim}
+\end{Snippet}
 
 While it would be completely fine to have and use such function,
 historically things have gone differently, and the grammatical plural
@@ -660,12 +660,12 @@ form is achieved using the \texttt{map} function\footnote{Note that
 define it. Moreover, the built-in version is in fact better than
 our variant, so redefining it is strongly discouraged.}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (map f l)
   (if (eq? l '())
     '()
     (cons (f (car l)) (map f (cdr l)))))
-\end{Verbatim}
+\end{Snippet}
 
 Therefore, ``the squares of initial seven primes'' should be written
 as \texttt{(map square (prime-numbers 7 1))}.
@@ -680,12 +680,12 @@ without resorting to zero, by specifying it for lists whose length
 is at least one, but that would actually make the code more
 complicated.}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (sum numbers)
   (if (eq? numbers '())
     0
     (+ (car numbers) (sum (cdr numbers)))))
-\end{Verbatim}
+\end{Snippet}
 
 We can now present the solution to the original problem: ``the sum
 of squares of initial 7 primes'' is
@@ -771,9 +771,9 @@ repository, available at \url{https://github.com/panicz/pamphlet}
 (the \texttt{libraries} directory), and placed somewhere
 in Guile's \texttt{\%load-path}, and then we need to type in
 the expression:
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (use-modules (ice-9 nice-9) (srfi srfi-1) (pamphlet))
-\end{Verbatim}
+\end{Snippet}
 
 Finally, we can feed the interpreter with all the necessary
 definitions: we need to explain what we mean by \texttt{divisors},
@@ -944,7 +944,7 @@ So under this representation, if we wish to obtain a value
 of a given atomic formula from a given valuation, we may need
 to use the \texttt{lookup} procedure:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (lookup key #;in mapping)
   (let* ((this (car mapping))
          (remaining (cdr mapping))
@@ -953,25 +953,25 @@ to use the \texttt{lookup} procedure:
     (if (eq? name key)
       value
       (lookup key remaining))))
-\end{Verbatim}
+\end{Snippet}
 
 We see a new construct here -- the \texttt{let*} form.
 The form is useful for naming the intermediate components
 of the object that we are trying to obtain. We could equivalently
 have written:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (lookup key #;in mapping)
   (if (eq? (car (car mapping)) key)
     (cdr (car mapping))
     (lookup key (cdr mapping))))
-\end{Verbatim}
+\end{Snippet}
 
 but this only increases the nesting level of expressions and makes
 the code more difficult to read. We could also have introduced
 intermediate names using local \texttt{define} forms:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (lookup key #;in mapping)
   (define this (car mapping))
   (define remaining (cdr mapping))
@@ -980,7 +980,7 @@ intermediate names using local \texttt{define} forms:
   (if (eq? name key)
     value
     (lookup key remaining)))
-\end{Verbatim}
+\end{Snippet}
 
 The extent of the inner \texttt{define} forms is limited
 to the outer \texttt{define} form. However, the structure
@@ -992,13 +992,13 @@ Finally, I promised before that we won't be using the
 doesn't deal with vehicles nor compact disc recording. Instead
 we can use the marvelous feature of \textit{pattern matching}:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (lookup key #;in mapping)
   (let* ((((name . value) . remaining) mapping))
     (if (eq? name key)
       value
       (lookup key remaining))))
-\end{Verbatim}
+\end{Snippet}
 
 This definition is much more compact than the original one,
 but may be slightly more difficult to follow. It simply
@@ -1021,7 +1021,7 @@ Equipped with the \texttt{lookup}, we can go back
 to the original problem and explain what it means
 for a proposition to be satisfied:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (define (satisfied? formula #;under valuation)
   (match formula
     (('and . clauses)
@@ -1036,19 +1036,19 @@ for a proposition to be satisfied:
      (not (satisfied? clause #;under valuation)))
     ((? symbol?)
      (lookup formula #;in valuation))))
-\end{Verbatim}
+\end{Snippet}
 
 There are many new things going on in here: the
 main part of the definition is the \texttt{match}
 expression, which -- in general -- takes the following
 form:
 
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (match <expression> 
   (<pattern-1> <value-1>) 
   (<pattern-2> <value-2>)
   ...)
-\end{Verbatim}
+\end{Snippet}
 
 The first \texttt{<pattern>} is \texttt{('and . clauses)}.
 It matches against all pairs whose left element is the symbol
@@ -1058,14 +1058,14 @@ So this part of code could be rewritten as\footnote{Technically
 speaking, the code is equivalent only if the \texttt{formula}
 always evaluates to the same value. In other cases, we would
 need to capture the value of \texttt{formula} before expansions.}:
-\begin{Verbatim}[samepage=true]
+\begin{Snippet}
 (if (and (pair? formula) (eq? (car formula) 'and))
   (let* ((clauses (cdr formula)))
     <value-1>)
   (match formula
     ((<pattern-2> <value-2>)
      ...)))
-\end{Verbatim}
+\end{Snippet}
 
 The \texttt{<value>} part from the scope of the first
 \texttt{<pattern>} is
