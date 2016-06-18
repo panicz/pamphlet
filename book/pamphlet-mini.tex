@@ -1,0 +1,105 @@
+\documentclass[12pt, oneside ]{book}
+\usepackage[a6paper,margin=0pt]{geometry}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage{fancyvrb}
+\usepackage{mathtools}
+\usepackage{qtree}
+\usepackage{pgfplots}
+\usepackage[
+  type={CC},
+  modifier={by-sa},
+  version={4.0}
+]{doclicense}
+
+\newenvironment{Snippet}{\Verbatim[samepage=true,fontsize=\scriptsize]}{\endVerbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 'dedication' environment: To add a dedication paragraph 
+% at the start% of book
+% Source: http://www.tug.org/pipermail/texhax/2010-June/015184.html
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newenvironment{dedication}
+{
+   \cleardoublepage
+   \thispagestyle{empty}
+   \vspace*{\stretch{1}}
+   \hfill\begin{minipage}[t]{0.66\textwidth}
+   \raggedright
+}
+{
+   \end{minipage}
+   \vspace*{\stretch{3}}
+   \clearpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chapter quote at the start of chapter        %
+% Source: http://tex.stackexchange.com/a/53380 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% First page of book which contains 'stuff' like: %
+%  - Book title, subtitle                         %
+%  - Book author name                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Book's title and subtitle
+\title{\Huge \textbf{A Pamphlet against R} \\ \huge{Computational Intelligence \\ in Guile Scheme}}
+% Author
+\author{\textsc{Panicz Maciej Godek} 
+\\ 
+\\ 
+\small{edited by: \textsc{Lawrence Bottorff} and \textsc{Rick Hanson}} }
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\doclicenseThis
+
+\clearpage
+\thispagestyle{plain}
+\par\vspace*{.35\textheight}{\centering I dedicate this booklet to my brother, who excels at Excel programming.\par}
+\par\vspace*{.35\textheight}{
+  \centering This e-book-reader-friendly version was prepared especially for Janek, co ma majtki z firanek.\par
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Auto-generated table of contents, list of figures and list of tables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+
+\mainmatter
+
+\input{chapters/0.tex}
+
+\input{chapters/1.tex}
+
+\input{chapters/2.tex}
+
+\input{chapters/3.tex}
+
+\input{chapters/4.tex}
+
+\input{chapters/5.tex}
+
+\input{chapters/6.tex}
+
+\input{chapters/bib.tex}
+
+\end{document}
