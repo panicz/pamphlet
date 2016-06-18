@@ -1,0 +1,1143 @@
+%%%%%%%%%%%%%%%%
+% NEW CHAPTER! %
+%%%%%%%%%%%%%%%%
+\chapter{Introduction}
+
+\begin{chapquote}{Hal Abelson and Gerald Sussman, 
+\textit{Structure and Interpretation of Computer programs}}
+\begin{quotation}
+  ``The acts of the mind [...] are chiefly these three:
+  1. Combining several simple ideas into one, and thus all complex
+  ideas are made.
+  2. [...] bringing two ideas, whether simple or complex, together,
+  and setting them by one so as to take a view of them at once,
+  without uniting them into one, by which it gets all its ideas
+  of relations.
+  3. [...] separating them from all the other ideas that accompany
+  them in their real existence: this is called abstraction, and thus
+  all its general ideas are made.''
+\end{quotation}
+
+  John Locke, \textit{An Essay Concerning Human Understanding} (1690)
+
+  [...]
+
+  A powerful programming language [...] serves as a framework within 
+  which we organize our ideas [...]. Every programming language has
+  three mechanisms for accomplishing this:
+  \begin{itemize}
+  \item \textbf{primitive expressions} [...]
+  \item \textbf{means of combination} [...]
+  \item \textbf{means of abstraction} [...]
+  \end{itemize}
+
+\end{chapquote}
+
+\section{Epistemic role of programming}
+
+This text was written with the belief that programming
+is not only a way of automating common repetitive tasks,
+but -- most importantly -- it is a means (probably the most
+efficient) of representing knowledge and understanding
+the world and its phenomena, as well as expressing original
+ideas.
+
+This view is frequently obscured by some bad practices
+that are widespread among programmers. Apart from expressing
+knowledge and ideas, programming languages allow programmers
+to do virtually everything they like -- it is therefore
+possible that they write code which gets in the way to
+understanding, rather than facilitate it\footnote{Apparently
+even excellent programmers and great erudites have been failing 
+at this task. One of the most extreme examples is the code from 
+Donald Knuth's \textit{The Art of Programming}.
+Written in the \texttt{MIX} assembly, the code only hides the
+conceptual structure of presented solutions from the reader.}.
+
+The claim that many programmers write code in ``the wrong way'',
+and that the author of this pamphlet knows which way is 
+``the right way'' may seem pretentious. It must therefore
+inevitably be left to the reader to judge whether the author's
+claims are true.
+
+\subsection{Expression-based programming}
+
+Throughout this pamphlet, we will be perceiving computer programs
+as constructions of compound objects. This view has recently been
+gaining more popularity, but it is still far from the mainstream
+view, which claims that a program is a set of instructions that
+ought to be performed in a given order.
+
+The latter view is often called \textit{imperative programming},
+and has traditionally been contrasted with \textit{declarative
+ programming}.
+Within the realm of declarative programming, there is a particular
+subset called \textit{functional programming}, where the programmer
+creates programs by defining functions (in mathematical sense).
+
+However, since the notion of functional programming has recently
+been somewhat appropriated by Haskell, and for some reasons that
+shall become clear later, I will prefer to use the term
+\textit{expression-based programming} or \textit{constructive
+programming}.
+
+For example, let's say that someone wishes to write a program that
+computes \textbf{a sum of squares of initial seven prime numbers}. 
+The imperative program that does this could look as follows:
+
+%\lstset{language=Python}
+\begin{Verbatim}[samepage=true]
+
+counter := 7
+number := 0
+sum := 0
+while(counter > 0):
+    if is_prime(number):
+        sum := sum + number^2
+        counter := counter - 1
+    number := number + 1
+
+\end{Verbatim}
+%\lstset{language=Lisp}
+
+After its execution, the \texttt{sum} variable will contain the
+desired value.
+
+However, if we take a look at the specification of the problem,
+we will notice that it can be itself perceived as a part of the
+solution: the expression ``sum of squares of initial seven prime
+ numbers'' has a certain linguistic (or syntactic) structure,
+and a corresponding conceptual (or semantic) structure. The 
+syntactic structure may not be immediately apparent, but simple
+analysis shows that the outer form of the expression is 
+``sum of $X$'', where $X$ is ``squares of initial seven prime
+numbers''. We can further decompose the latter, extracting the 
+form ``squares of $Y$'',  where $Y$ is ``initial seven prime 
+numbers''. Making yet another step, we obtain the expression
+``initial $N$ prime numbers'', where $N$ is ``seven''.
+
+\begin{center}
+\Tree [.sum 
+  [.squares 
+    [.prime-numbers initial seven ] ] ]
+\end{center}
+
+This isn't the only way in which we can perform decomposition.
+That's because the natural language that we use in our everyday
+communication is naturally ambiguous. For instance, by 
+``initial seven prime numbers'', do we mean ``a set of initial
+ prime numbers'', or ``a sequence of initial prime numbers''?
+
+This distinction is of course insignificant from the point of view of
+our task, because addition is commutative, and hence the order in which
+we compute this sum is arbitrary. On the other hand, if we asked
+someone to name the initial seven prime numbers, it would be likely
+that he or she would enumerate them in the ascending order. If we
+investigated further into that phenomenon, it would probably turn
+out that the order is a consequence of the order in which the numbers
+are computed by the speaker. Indeed, what a shocking experience it
+would be to hear those numbers being uttered in a random or descending
+order!
+
+In order to avoid such shocks, people apply the so-called
+\textit{cooperative principles} to their conversations\footnote{
+The theory of Cooperative Principles was formulated by Paul Grice.
+He explicated four maxims that ought to be applied in effective
+communication. Probably the most relevant to programming and
+the one that is least respected by programmers is the Maxim
+of Manner, which recommends to avoid obscurity of expression,
+avoid ambiguity, be brief and be orderly.}: they
+try to adopt their utterances to the expectations of their
+interlocutors (to the extent in which they can recognize them),
+or -- in the parlance of programmers -- they ``try to design
+clean and simple APIs''\footnote{Seriously.}.
+
+Note however, that even if there is no natural order of elements
+in a set, whenever we wish to enumerate elements from that set,
+imposing \textit{some} order is inevitable.
+
+Therefore, unless specified otherwise, whenever we speak about
+some multitude of elements, we shall mean a sequence of those
+elements, rather than a set (even if the order is irrelevant).
+
+Returning to our example, we have a function ``initial $N$
+prime numbers'', where $N$ is a natural number. The value
+of a function, for a given $N$, is an ascending sequence
+of $N$ initial prime numbers. For instance, the value (or meaning
+\footnote{As it was shown by Frege, the word ``meaning'' is also
+ambiguous, and can either mean \textit{intension/connotation} or 
+\textit{extension/denotation}.
+Intension of a semantically compound concept is its formulation
+in simpler terms.}, or denotation) of expression ``initial 7 
+prime numbers'' is a sequence \texttt{(2 3 5 7 11 13 17)}
+\footnote{Of course, we cannot write down a sequence, and so we are 
+forced to write down a \textit{textual representation} of a sequence.
+In fact, we can only write down two distinct textual expressions,
+hoping that the reader will establish in her or his mind, that those
+distinct two expressions are meant to refer to the same abstract
+object.}.
+
+This is as far as we can go with the linguistic analysis.
+Obviously, the expressions under consideration consist of
+words, but their meanings do not (at least not in this
+particular case)\footnote{It is possible to build linguistic
+expressions whose meanings consist of words. A fine example
+is a linguistic expression ``This sentence'', which refers
+to a sequence of two words: \texttt{(This sentence)}.}:
+the sequence of numbers consists of numbers and their order.
+We could therefore ask: what is the structure of a sequence?
+
+We can note that sequences can be empty, as it is the case
+with the denotation of the expression ``initial 0 prime numbers'',
+or ``empty sequence''. Non-empty sequences can be decomposed
+into their first element, and the remainder of its elements
+(which may be empty). This prompts us with a recipe to construct
+sequences recursively. First, let's note that the phrase
+``initial $N$ prime numbers'' is synonymous with ``$N$ least
+prime numbers greater than 0''. Therefore we have function
+of two arguments: ``$N$ least prime numbers greater than $M$''.
+
+We can define this function as follows:
+
+\begin{quotation}
+The meaning of ``$0$ least prime numbers greater than $M$''
+is an empty sequence.
+
+The meaning of ``$N+1$ prime numbers greater than $M$''
+is:
+\begin{itemize}
+\item a sequence whose first element is $M+1$, and whose
+remaining elements are the $N$ prime numbers greater
+than $M+1$, \textbf{if} $M+1$ is a prime number;
+\item otherwise it's just the same as $N+1$ prime numbers
+greater than $M+1$.
+\end{itemize}
+\end{quotation}
+
+Although the above formulation is a legitimate description
+that explains how to construct a sequence of subsequent
+prime numbers, it disconcertingly brings legal gibberish
+to mind. It also makes it difficult to distinguish between
+the strict definitional part of the text from its more
+explanatory fragments. Moreover, as it was noted before,
+the syntactical structure of the text isn't immediately
+clear even for the simplest examples.
+
+In order to handle these issues, it is customary to
+introduce a formal notation. It is a common practice
+in mathematics, where mathematicians use special symbols
+to denote certain abstract concepts, and in logic, where
+logicians try to make certain reasonings more explicit.
+
+\section{Introduction to Scheme}
+
+In the quest for our perfect notation, we shall stick
+to the rule of parsimony: we want to make as few assumptions
+and conventions as possible, but we also want to make sure
+that they are universal. Firstly, let's embrace the
+compound syntactical units in parentheses. Then, the
+expression ``sum of squares of initial seven prime numbers''
+becomes:
+
+\texttt{(sum (squares (initial seven prime numbers)))}
+
+While at first the parentheses may seem difficult
+to match, they allow to avoid confusions and ambiguities
+that are typical for the natural language. Note also,
+that we got rid of the ``of'' prepositions, because
+they provide no information: we can simply read \texttt{(f x)}
+as ``$f$ of $x$'' (provided that $f$ has only one argument).
+
+Furthermore, let's stick to a convention, that a single
+concept is expressed using a single word, where by words
+we mean sequences of letters separated with parentheses
+or white spaces. Also, let's make sure that the ruling
+word of the expressions appears at the first position.
+We can make compound words using hyphens:
+
+\texttt{(sum (squares (prime-numbers initial seven)))}
+
+This formulation expresses the structure of our problem
+well enough using so-called \textit{fully parenthesized
+Polish notation} -- certainly we can no longer be confused
+with lawyers. Now the only thing that's left is to explain
+in basic terms what we mean by \texttt{sum}, \texttt{squares}
+and \texttt{prime-numbers}. The question which terms
+are to be regarded as basic depends on the context.
+In this particular case, we also happen to have written
+(a fragment of) a program in a programming language called Scheme,
+which enumerates a whole set of notions that are regarded as 
+simple\footnote{The exact specification of the basic terms
+of Scheme is provided in the \textit{Revised$^n$ Report on the
+Algorithmic Language Scheme} that can be found at
+\url{http://www.schemers.org/Documents/Standards}.}, and the notion of
+\texttt{prime-numbers} certainly does not belong to that set.
+It does, however, contain the notions of numbers, addition,
+multiplication, division, comparison and it also provides some means
+to construct and deconstruct sequences. Most importantly,
+it provides means for defining new notions.
+
+\subsection{Constructions}
+
+Paraphrasing our construction of ``least $N$ prime numbers 
+greater than $M$'' from previous section, we can write:
+
+\begin{Verbatim}[samepage=true]
+(define (prime-numbers amount from)
+  (if (= amount 0)
+    '()
+    (if (prime? from)
+      (cons from (prime-numbers (- amount 1) (+ from 1)))
+      (prime-numbers amount (+ from 1)))))
+\end{Verbatim}
+
+Although conceptually we present nothing new here compared to
+the previous section, there are a few formal elements that need
+to be explained. First of all, we use a special \texttt{define}
+form from the Scheme language. This way, we give a name
+to the new concept that we are defining\footnote{Although the
+concept might not be so new for us, because we have defined
+it informally in the previous section, it certainly is new for
+the Scheme interpreter.}. We also observe that there are
+quite a few new concepts used in the definition. The body (or
+\textit{definiens}, if you please) consists of an \texttt{if}
+expression, which -- in general -- takes the following form:
+
+\texttt{(if <condition> <then> <else>)}
+
+The value of the \texttt{if} expression depends on the value
+of \texttt{<condition>}. If it is true in a given context, then
+the value of the whole expression becomes the value of the 
+\texttt{<then>} expression. Otherwise, it is the value of the
+\texttt{<else>} expression. (This is actually quite straightforward,
+if you think about it.)
+
+The expression that appears as the \texttt{<condition>} has 
+a form \texttt{(= amount 0)}. The meaning of the word \texttt{=} is
+the \textit{numerical comparison}, commonly found in mathematics. It
+can be surprising to see it used as \texttt{(= x y)} rather
+than \texttt{(x = y)}. Recall however our convention that
+``the ruling word of the expression appears at the first
+position''. We could depart from that rule for mathematical
+expressions (and whoever knows where else), but this would
+only make our rule set more complex. However, it actually
+turns out that mathematical expressions do not appear so
+frequently in computer programs to make it worth the trouble,
+and having a simple language turns out much greater an
+advantage.
+
+As one can expect, the \texttt{(= amount 0)} expression evaluates
+to the logical truth, if the meaning of \texttt{amount} is 0 in that
+context, and otherwise it evaluates to the logical falsehood.
+
+In the first case, the value of the \texttt{if} expression
+becomes \texttt{'()}, that is -- an empty sequence. In the
+second case, the expression becomes:
+
+\begin{Verbatim}[samepage=true]
+(if (prime? from)
+  (cons from (prime-numbers (- amount 1) (+ from 1)))
+  (prime-numbers amount (+ from 1)))
+\end{Verbatim}
+
+This, again, is an \texttt{if} expression. Its \texttt{<condition>}
+clause takes form \texttt{(prime? from)}. The intent is, that
+\texttt{prime?} is a function that evaluates to the logical
+truth if its argument is a prime number, and to the logical
+falsehood if its argument is a non-prime number. We will explain
+later what we exactly mean by that.
+
+It may be surprising for someone to see a punctuation mark
+being a part of a name of a concept. There is however a common
+convention among Scheme programmers to end the names of
+\textit{predicates}\footnote{i.e. functions whose values can either
+be logical truth or logical falsehood.} with question marks\footnote{
+A cautious reader probably noticed that the \texttt{=} function
+used before is also a predicate, although it's name doesn't end
+with a question mark.
+This lack of consequence isn't bothersome in practice though, because
+naming conventions are not as essential to the structure of a language
+as the rules given earlier.}.
+
+The \texttt{<then>} clause of the considered \texttt{if} expression
+is interesting. It has a form:
+
+\texttt{(cons from (prime-numbers (- amount 1) (+ from 1)))}
+
+There are four things to be noted here: first, the expression
+refers to the \texttt{cons} function, which is used for
+\textit{constructing} sequences. Second, the second argument
+to \texttt{cons} refers to the notion of \texttt{prime-numbers},
+which is currently being defined.
+This form of definitions is often called \textit{recursive}. Third,
+we use the elementary mathematical operations of \textit{addition}
+and \textit{subtraction} in the same way that we used the numerical
+comparison earlier, i.e. using the prefix notation. Lastly, the
+fact that we pass \texttt{amount} decreased by one to the recursive
+call, in conjunction with the fact that the sequence of 0 prime
+numbers is empty, guarantees that our construction will terminate,
+provided there is enough prime numbers.
+
+The \texttt{<else>} clause of the second \texttt{if} expression
+has a form:
+
+\texttt{(prime-numbers amount (+ from 1))}
+
+In other words, it establishes the fact that if $n$ isn't
+a prime number, then the prime numbers starting from $n$ are
+the same as the prime numbers starting from $n+1$.
+
+So far we have defined \texttt{prime-numbers} in terms of primitive
+notions, such as addition, subtraction, construction, conditionals
+and recursion. The only thing that's left is to explain what it means
+that a number is \texttt{prime?}.
+
+We know from the mathematics that a prime number is a number whose
+only natural divisors are 1 and the number itself. We also know
+that a number cannot be divisible by a number greater than itself.
+Hence, in order to find a list of numbers, we can try all numbers
+starting from 1.
+
+\begin{Verbatim}[samepage=true]
+(define (divisors n from)
+  (if (> from n)
+    '()
+    (if (= (remainder n from) 0)
+      (cons from (divisors n (+ from 1)))
+      (divisors n (+ from 1)))))
+\end{Verbatim}
+
+This definition has a very similar structure to the previous one.
+We used some new elementary functions, namely the comparison predicate
+\texttt{>} (greater than) and the \texttt{remainder} operation.
+
+Perhaps the program could be made clearer if we had defined what it
+means for a number to divide another number. However, if we decided
+to define a predicate \texttt{(divides? a b)}, it wouldn't be clear
+whether we mean that ``\texttt{a} divides \texttt{b}'' or that
+``\texttt{b} divides \texttt{a}'' -- this is an apparent limitation
+of the prefix notation.
+
+This problem could be solved by adding another pair of parentheses
+in our definition:
+
+\begin{Verbatim}[samepage=true]
+(define ((divides? a) b)
+  (= (remainder a b) 0))
+\end{Verbatim}
+
+Now it should be clearer that we ask whether \texttt{b} divides
+\texttt{a}.
+Although the core Scheme doesn't allow such notation, one of
+the modules contained in this pamphlet's repository legalizes
+it. From the semantic point of view, it defines \texttt{divides?}
+as a function of \texttt{a} whose value is a function of \texttt{b}
+that compares the remainder of the division of \texttt{a} by
+\texttt{b} with \texttt{0}.
+
+Since we have means to construct the sequence of divisors of a given
+number, we can check whether the number is a prime simply by comparing
+its list of divisors with a list containing only the number 1 and
+the considered number itself:
+
+\begin{Verbatim}[samepage=true]
+(define (prime? number)
+  (equal? (divisors number 1) (list 1 number)))
+\end{Verbatim}
+
+We have used here two new primitive functions: \texttt{equal?} and
+\texttt{list}. They are not entirely primitive, as they could be
+defined rather easily in terms of other operations (we will see how
+to do that shortly), but every Scheme implementation certainly
+provides those, so for now we can consider them as such.
+
+The \texttt{list} function simply returns a list of values of
+its arguments. In this particular example, we could as well have written
+\texttt{(cons 1 (cons number '()))} instead of using \texttt{list}.
+
+The \texttt{equal?} function is a predicate which says that two
+or more compound objects are identical.
+
+In Scheme, there are a few distinct concepts of equality. The first
+that we have seen is called \textit{numerical equality} and is
+expressed using the \texttt{=} symbol. The second that we've just
+seen above is called \textit{identity}, and is expressed using
+the \texttt{equal?} symbol.
+The third is called \textit{sameness} and is expressed using
+the \texttt{eq?} symbol.
+
+It is guaranteed that two symbols having the same shape are
+\texttt{eq?} and that all empty sequences are \texttt{eq?}. However
+for various reasons it is not guaranteed that two instances of
+the same number are \texttt{eq?}.
+Two lists probably won't be \texttt{eq?} even if they have
+all the same elements in the same order -- the reason for that
+is that usually each usage of \texttt{cons} or \texttt{list}
+creates a new object in the computer memory.
+
+It is noteworthy that if two things are \texttt{eq?} or \texttt{=},
+they will certainly be \texttt{equal?}, so the latter predicate is
+most general and can be used in most situations.
+
+\subsection{How do we know}
+
+So far, we have defined a few notions that were used in the
+formulation of the original problem. We defined them by means
+of recursion, so we had to worry only about two things:
+what would be the shape of the simplest instance of a given
+notion, and how do we build a more complex instance out of
+a simpler one.
+
+It would be helpful to have some means of verifying whether
+our definitions actually work as expected. It turns out, that
+those means are also very simple: those are \textit{substitution}
+and \textit{reduction}.
+
+Let's see how it works for the \texttt{divisors} function.
+To begin with something simple, let's see what is the denotation
+of \texttt{(divisors 4 1)}. We obtain the \textit{connotation}
+of the expression by substituting the complex notion of
+\texttt{divisors} with its definition, replacing any formal
+parameters with their values. Thus we obtain:
+
+\begin{Verbatim}[samepage=true]
+(if (> 1 4)
+  '()
+  (if (= (remainder 4 1) 0)
+    (cons 1 (divisors 4 (+ 1 1)))
+    (divisors n (+ 1 1))))
+\end{Verbatim}
+
+We see that the first condition is clearly false, because $1$
+is smaller than $4$. We can therefore substitute the
+conditional with its \texttt{<else>} branch:
+
+\begin{Verbatim}[samepage=true]
+(if (= (remainder 4 1) 0)
+  (cons 1 (divisors 4 (+ 1 1)))
+  (divisors n (+ 1 1))))
+\end{Verbatim}
+
+If we substitute the expression \texttt{(remainder 4 1)} with
+its value, i.e. the number $0$, it is apparent that the
+condition \texttt{(= 0 0)} is true, so we can replace the
+conditional with its \texttt{<then>} branch:
+
+\begin{Verbatim}[samepage=true]
+(cons 1 (divisors 4 (+ 1 1)))
+\end{Verbatim}
+
+It is also clear that \texttt{(+ 1 1)} is $2$. We therefore
+go back to the initial situation, with the difference that
+our expression is now an argument to \texttt{cons} function,
+and its \texttt{from} argument has value $2$ instead of $1$.
+
+By expanding the expression with its connotation and performing
+appropriate reductions, we obtain the following form:
+
+\begin{Verbatim}[samepage=true]
+(cons 1 (cons 2 (divisors 4 3)))
+\end{Verbatim}
+
+In next iteration of substitutions and reductions it will
+turn out that the remainder of $4$ divided by $3$ is non-zero,
+so the above expression can be rewritten as:
+
+\begin{Verbatim}[samepage=true]
+(cons 1 (cons 2 (divisors 4 4)))
+
+
+\end{Verbatim}
+
+As the remainder of the division of $4$ by $4$ is 0, we
+rewrite the above as:
+
+\begin{Verbatim}[samepage=true]
+(cons 1 (cons 2 (cons 4 (divisors 4 5)))
+\end{Verbatim}
+
+Now the \texttt{<condition>} of the outer \texttt{if} form
+is satisfied, so the \texttt{(divisors 4 5)} expression evaluate
+to empty sequence to yield:
+
+\begin{Verbatim}[samepage=true]
+(cons 1 (cons 2 (cons 4 '()))
+\end{Verbatim}
+
+which eventually evaluates to the sequence \texttt{(1 2 4)}.
+The assumptions under which we performed the above inference
+are called \textit{the substitutional model of computation}.
+
+\subsection{Destructuring}
+
+So far, we managed to explain what we mean by the expression 
+``initial $N$ prime numbers'' from our formulation of the original 
+problem. The formulation was a bit more complex, because it asked
+to sum the squares of those numbers.
+
+So in order to accomplish that task, we still need to explain what
+we mean by squares and their sum. Let's begin with the denotation
+of the expression ``squares of $Y$''. From our previous
+considerations we know that $Y$ is a list of numbers. Intuitively, 
+if $Y$ were a list \texttt{(1 2 3)}, then the meaning of the outer
+expression would be a list \texttt{(1 4 9)}, that is,
+each element of the denotation of the expression ``squares of $Y$''
+is a square of the corresponding element of $Y$.
+
+A square of a number is -- by definition -- that number multiplied
+by itself:
+
+\begin{Verbatim}[samepage=true]
+(define (square number)
+  (* number number))
+\end{Verbatim}
+
+To make it clear what the squares of a sequence of numbers are, or
+rather to explain how they are constructed, we need to notice that
+the squares of an empty sequence of numbers are an empty sequence.
+
+As for a non-empty sequence, we know that it can be decomposed into
+its first element and the sequence of its remaining elements. We
+could therefore define squares of a non-empty sequence as a sequence,
+whose first element is a square of the first element of the input
+sequence, and whose remaining elements are the squares of the
+remaining elements of the input sequence (this statement sounds
+very tautological indeed, but we will see shortly how to deal
+with that)
+
+\begin{Verbatim}[samepage=true]
+(define (squares numbers)
+  (if (eq? numbers '())
+    '()
+    (cons (square (car numbers)) (squares (cdr numbers)))))
+\end{Verbatim}
+
+The most important thing about this definition is that it reveals
+the means for destructuring lists. For historical reasons, the
+function whose value is the first item of a list is called
+\texttt{car}, and the function that yields the remaining of
+the list is called \texttt{cdr}.
+
+It should be clear that for any values \texttt{a} and \texttt{b},
+\texttt{(car (cons a b))} is \texttt{a} and \texttt{(cdr (cons a b))}
+is \texttt{b}.
+
+The names \texttt{car} and \texttt{cdr} used to be popular, because
+they prompted contractions like \texttt{(caddr x)}, which was an
+abbreviation of \texttt{(car (cdr (cdr x)))}. Although some examples
+from this chapter will be written using those functions, a more
+powerful (and readable) technique will be presented in one of
+the later sections.
+
+Looking back at our definition of \texttt{squares}, we notice
+that there's something essentially wrong with it. Linguistically,
+the word \textit{squares} is just a plural form of \textit{square}.
+This relation isn't reflected in our usage.
+
+Suppose that we wanted to solve a problem of finding the cubes
+of a list of numbers, rather than squares. Following the above
+pattern, we would need to define the function \texttt{cube} that
+would explain what a cube of a number is. Then we would define
+a function \texttt{cubes} that would apply the function \texttt{cube}
+to each elements of a given list.
+
+Such a practice would be very unhandy. We would rather wish to
+have a function, let's call it \texttt{plural}, that would take
+a function of one argument, and return a function of list of
+arguments:
+
+\begin{Verbatim}[samepage=true]
+(define ((plural concept) list)
+  (if (eq? list '())
+    '()
+    (cons (concept (car list)) ((plural concept) (cdr list)))))
+\end{Verbatim}
+
+While it would be completely fine to have and use such function,
+historically things have gone differently, and the grammatical plural
+form is achieved using the \texttt{map} function\footnote{Note that
+\texttt{map} is a built-in function, so there's no actual need to
+define it. Moreover, the built-in version is in fact better than
+our variant, so redefining it is strongly discouraged.}:
+
+\begin{Verbatim}[samepage=true]
+(define (map f l)
+  (if (eq? l '())
+    '()
+    (cons (f (car l)) (map f (cdr l)))))
+\end{Verbatim}
+
+Therefore, ``the squares of initial seven primes'' should be written
+as \texttt{(map square (prime-numbers 7 1))}.
+
+The only thing that's left is to explain what the sum of a list is.
+We should consider the boundary condition first: what would be the
+sum of an empty list? We know that no elements are zero elements,
+so we could expect that a sum of zero elements will be zero. Otherwise
+it's the value of the first element added to the value of the
+remaining elements\footnote{We could also define \texttt{sum}
+without resorting to zero, by specifying it for lists whose length
+is at least one, but that would actually make the code more
+complicated.}:
+
+\begin{Verbatim}[samepage=true]
+(define (sum numbers)
+  (if (eq? numbers '())
+    0
+    (+ (car numbers) (sum (cdr numbers)))))
+\end{Verbatim}
+
+We can now present the solution to the original problem: ``the sum
+of squares of initial 7 primes'' is
+
+\texttt{(sum (map square (prime-numbers 7 1)))}
+
+Note the similarity between the formulation and the solution. This
+sort of similarity isn't reserved for the Scheme programming language,
+and can be achieved in virtually every programming language that
+allows to create functions\footnote{Some additional practical
+considerations may regard languages that do not automatically reclaim
+storage, such as C.}. The advantage of Scheme however is its
+simplicity:
+we already know almost everything about the syntax of our language,
+and our knowledge of its semantics is sufficient to construct many
+advanced programs.
+
+The most important thing is that, unlike the imperative code
+given earlier, this code explains exactly what it is about: the
+reader doesn't need to recognize any implicit patterns, as
+everything has been laid out explicitly.
+
+The only thing that may seem mysterious at first sight is the
+role of arguments to \texttt{prime-numbers}. We could add a comment
+that would explain that role.
+
+Scheme has three types of comments. There are comments that begin
+with a semicolon (\texttt{;}) and end with the end of the line,
+block comments that begin with \texttt{\#|} and end with \texttt{|\#},
+and very useful comments that begin with \texttt{\#;} and comment out
+exactly one expression that follows them. We could therefore
+enrich our solution with additional information:
+
+\texttt{(sum (map square (prime-numbers 7 \#;greater-than-or-equal 1)))}
+
+\subsection{Getting your hands dirty}
+
+So far, we have been using a formal notation to express certain
+mathematical notions in a precise manner -- everything was going
+on on the paper and in our heads. There's yet another important
+advantage of our notation: it can be ``comprehended'' by computers,
+so on one hand, we have a practical instance of verification whether
+our beliefs regarding the meanings of certain expressions are right,
+and on the other -- we can employ the computer to do some parts
+of reasoning for us. Of course, if you do not wish an inferior machine
+to perform the noble task of reasoning for you, you can still
+benefit from reading the pamphlet and exercising the strict notation.
+
+There are many free practical implementations of Scheme. Probably
+the most popular and accessible is Racket, which comes with
+a very intuitive editor. Another nice implementation is
+MIT/GNU Scheme, that comes with a slightly less intuitive editor.
+There are implementations that focus on speed, such as Gambit
+or Stalin, and those that compile to some popular platforms like Java
+or JavaScript. There's also an implementation called Biwa Scheme,
+that can be run directly in a web browser.
+
+The implementation that is going to be used in this text is
+called Guile. It is not so easy to install, but it is very
+convenient for practical interactions and incremental development.
+It integrates particularly well with the Emacs editor through
+the Geiser package. The only bad thing about Emacs is that it requires
+getting used to.
+
+The detailed information regarding setting up Emacs, Geiser and Guile
+is platform-dependent and as such is beyond the scope of this pamphlet.
+An interested reader will easily find the required information on the
+web.
+
+Assuming that everything is up and running, you can evaluate
+a single expression in a Scheme interpreter. The most common way
+is to enter an expression into a so-called \textit{command line}
+or REPL (which stands for ``read-eval-print loop''), however
+having a proper environment like Emacs with Geiser, it is possible
+to enter an expression in a text file and evaluate it using
+a magic keystroke\footnote{By default, it's \texttt{C-x C-e}
+in Geiser.}.
+
+Before we get anything done, we need to legalize the syntactic
+extensions that are used throughout this pamphlet: first, the
+additional modules need to be downloaded from the pamphlet's
+repository, available at \url{https://github.com/panicz/pamphlet}
+(the \texttt{libraries} directory), and placed somewhere
+in Guile's \texttt{\%load-path}, and then we need to type in
+the expression:
+\begin{Verbatim}[samepage=true]
+(use-modules (ice-9 nice-9) (srfi srfi-1) (pamphlet))
+\end{Verbatim}
+
+Finally, we can feed the interpreter with all the necessary
+definitions: we need to explain what we mean by \texttt{divisors},
+what it means for a number to be \texttt{prime?}, how to construct
+a sequence of \texttt{prime-numbers}, what is a \texttt{square}
+of a number and how to \texttt{sum} a list of numbers.
+
+Then, we can ask the computer to give us the value of the
+expression \texttt{(sum (map square (prime-numbers 7 1)))}.
+
+\subsection{Looking down}
+
+So far, as we were referring to certain expressions of the English
+language whose meanings we were trying to paraphrase, we were usually
+quoting them. For example, we could say: ``The meaning
+of the expression <<first three natural numbers>> is a sequence
+\texttt{(0 1 2)}''. It is therefore typical, especially when
+talking about the meanings of linguistic expressions, to use
+the \textit{quotation} operator.
+
+In Scheme, the quotation operator is expressed using
+\texttt{quote} form. For example, the value of the expression
+\texttt{(quote (sum (map square (prime\--numbers 7 1))))}
+is a sequence of two elements, whose first element is
+a symbol \texttt{sum}, and whose second element is a sequence
+of three elements, whose first element is a symbol \texttt{map},
+second element is a symbol \texttt{square}, and third element
+is a sequence of three elements: a symbol \texttt{prime-numbers},
+a number $7$ and a number $0$.
+
+We've actually already seen an example of quotations in our
+definitions: it turns out that the operation of quotation is
+so useful that it has a notational shorthand: \texttt{'\textit{x}}
+means the same as \texttt{(quote \textit{x})}, so our notation
+for the empty sequence -- \texttt{'()} -- could equivalently
+be written as \texttt{(quote ())}. Note that the \texttt{quote}
+operator is very different from the quotation marks that are
+often used in programming languages for constructing strings,
+because it allows us to quote structures, rather than create
+flat sequences of characters.
+
+As you might have already noticed, the compound expressions
+in Scheme are also sequences\footnote{Note that we need to quote
+the empty sequence in order for it to mean the empty sequence,
+because the meaning of an empty expression is unspecified.
+Some dialects of Lisp blur this distinction and assume that
+the meaning of an empty expression is the empty sequence.
+This may be confusing though, and the Schemers are proud that
+their language is conservative in this regard}.
+This property, called \textit{homoiconicity},
+is one of the most valuable properties of Scheme, because it
+allows to treat programs as syntactic objects and write programs
+that transform other programs in Scheme rather easily.
+
+It also allows to create new languages with a common syntax.
+Or, as Alfred Tarski would put it, it allows to use Scheme
+as a \textit{meta-language} for some other formal languages\footnote{
+It is also possible to use Scheme as a meta-language for itself
+-- this technique, called \textit{meta-circular evaluation},
+has been explored in the grand book \textit{Structure and
+Interpretation of Computer Programs}\cite{SICP}. This idea was
+at the heart of the seminal paper \textit{Recursive Functions
+of Symbolic Expressions and their Computation by Machine}
+by John McCarthy\cite{McCarthy1960}, which gave birth to
+the predecessor of Scheme called Lisp.}.
+
+To illustrate that idea, we will describe the semantics of
+a simple formal system called \textit{propositional logic}, which
+captures how compound sentences are built from simpler ones.
+The simplest units of propositional logic are called
+\textit{atomic formulas} -- they stand for propositions
+that aren't analyzed in simpler terms, and that can only
+be \textit{asserted} or \textit{rejected}.
+
+The expressions of propositional logic are either propositional
+variables $p,q,r,...$ standing for atomic
+formulas, or junctions of expressions: $\phi \vee \psi$,
+$\phi \wedge \psi$, $\phi \Rightarrow \psi$, $\phi \equiv \psi$,
+$\neg \phi$. These compound expressions mean disjunction (``$\phi$ or
+$\psi$''), conjunction (``$\phi$ and $\psi$''), implication
+(``if $\phi$ then $\psi$''), equivalence (``$\phi$ if and only
+if $\psi$''), and negation (``it is not the case that $\phi$''),
+accordingly. For the remainder of this example we shall be concerned
+only with conjunction, disjunction and negation.
+
+The semantics of propositional logic determines the logical value
+(i.e. truth or falsehood) of each formula with respect to some given
+\textit{valuation}, i.e. a mapping from propositional variables to
+logical values.
+
+If a formula is atomic, then its value is simply specified by the
+valuation. Otherwise it is a compound formula: a negation, a disjunction
+or a conjunction. If it is a negation, then it is true only if
+the negated formula is false; if it is a disjunction, then it
+is true only if at least one of its sub-formulas is true; finally,
+if it is a conjunction, then it is true only if all its sub-formulas
+are true.
+
+A formula is satisfiable if there exists a valuation under which
+it is true. A formula is logically valid if it is true for
+any valuation. For example, $p \vee \neg p$ is a valid formula,
+because if $p$ is true, then the whole disjunction is true, and
+if $p$ is false, then $\neg p$ is true and the disjunction is
+true as well. It is easy to see that if a formula is valid then
+its negation is not satisfiable.
+
+Testing whether a given valuation satisfies a given formula
+can be a tedious task that can be performed more efficiently
+on a computer.
+
+We will use our fully parenthesized Polish notation to represent
+formulas of propositional calculus. We will write
+\texttt{(and $\phi$ $\psi$)} to mean conjunction,
+\texttt{(or $\phi$ $\psi$)} to mean disjunction and
+\texttt{(not $\phi$)} to mean negation.
+
+Note that conjunction and disjunction both possess an algebraic
+property of \textit{associativity}, i.e. 
+$(\phi \circ \psi) \circ \chi = \phi \circ (\psi \circ \chi)$ for
+$\circ \in \{ \wedge, \vee \}$. We can therefore interpret
+\texttt{(and $\phi_1$ $\phi_2$ ... $\phi_n$)} as
+$\phi_1 \wedge \phi_2 \wedge ... \wedge \phi_n$ with no ambiguity.
+The same applies to disjunction.
+
+Having a fixed representation, we can explicate the conditions
+under which a formula is \texttt{satisfied?} under a given valuation.
+However, we need to find some way to represent a valuation.
+One obvious representation of a mapping
+is by enumerating the name-value pairs. For example, if there
+are three distinct atomic formulas $p,q,r$ in $\phi$, one of
+the eight possible valuations could be written as
+\texttt{'((p . \#t)(q . \#f)(r . \#t))}. The \texttt{\#t} and
+\texttt{\#f} inscriptions represent the logical truth and
+falsehood in Scheme.
+
+Notice the strange dot that appears between each key and its
+corresponding value. This is because we said that we will
+represent the mapping using a key-value \textit{pairs}, rather
+than two-element lists. We could as well have chosen the
+latter representation, but we didn't, so that the strange
+dot could appear.
+
+We said earlier that \texttt{cons} is a primitive function
+that constructs lists. However, it would be more accurate
+to say that \texttt{(cons a b)} creates (or \textit{allocates})
+a new pair, whose \textit{left value} (or \texttt{car})
+is its first argument, \texttt{a}, and whose \textit{right value}
+(or \texttt{cdr}) is its second argument, \texttt{b}.
+
+A list is therefore either an empty sequence, or a pair
+whose right value is a list\footnote{A nesting of pairs
+whose last right value is not the empty list is called
+\textit{improper list}.}.
+
+Now it turns out that the list \texttt{(1 2 4)} could
+equivalently be written as \texttt{(1 . (2 . (4 . ())))}\footnote{
+Note the spaces between the symbols and the dot: they are important,
+because it is fine to use the dot as a part of a symbol or a number.},
+and similarly, the \texttt{(cons a b)}
+expression could be written as \texttt{(cons . (a . (b . ())))}.
+The list notation is therefore a shorthand for a pair
+notation\footnote{Note that the distinction of the left element
+of the pair as a first element of the list is only a matter
+of convention -- for example, if Lisp was invented in the Arabic
+countries, it could have been the other way around.}.
+
+So under this representation, if we wish to obtain a value
+of a given atomic formula from a given valuation, we may need
+to use the \texttt{lookup} procedure:
+
+\begin{Verbatim}[samepage=true]
+(define (lookup key #;in mapping)
+  (let* ((this (car mapping))
+         (remaining (cdr mapping))
+         (name (car this))
+         (value (cdr this)))
+    (if (eq? name key)
+      value
+      (lookup key remaining))))
+\end{Verbatim}
+
+We see a new construct here -- the \texttt{let*} form.
+The form is useful for naming the intermediate components
+of the object that we are trying to obtain. We could equivalently
+have written:
+
+\begin{Verbatim}[samepage=true]
+(define (lookup key #;in mapping)
+  (if (eq? (car (car mapping)) key)
+    (cdr (car mapping))
+    (lookup key (cdr mapping))))
+\end{Verbatim}
+
+but this only increases the nesting level of expressions and makes
+the code more difficult to read. We could also have introduced
+intermediate names using local \texttt{define} forms:
+
+\begin{Verbatim}[samepage=true]
+(define (lookup key #;in mapping)
+  (define this (car mapping))
+  (define remaining (cdr mapping))
+  (define name (car this))
+  (define value (cdr this))
+  (if (eq? name key)
+    value
+    (lookup key remaining)))
+\end{Verbatim}
+
+The extent of the inner \texttt{define} forms is limited
+to the outer \texttt{define} form. However, the structure
+of the code is more difficult to follow, as it contains
+many obscure symbols.
+
+Finally, I promised before that we won't be using the
+\texttt{car} and \texttt{cdr} functions, because our code
+doesn't deal with vehicles nor compact disc recording. Instead
+we can use the marvelous feature of \textit{pattern matching}:
+
+\begin{Verbatim}[samepage=true]
+(define (lookup key #;in mapping)
+  (let* ((((name . value) . remaining) mapping))
+    (if (eq? name key)
+      value
+      (lookup key remaining))))
+\end{Verbatim}
+
+This definition is much more compact than the original one,
+but may be slightly more difficult to follow. It simply
+decomposes the structure of \texttt{mapping}, i.e. that
+it is a pair whose left value is a pair, and names
+its parts accordingly: the left value of the left value
+of \texttt{mapping} is named \texttt{name}, the right
+value of the left value of \texttt{mapping} is named
+\texttt{value}, and the right value of \texttt{mapping}
+is named \texttt{remaining}.
+
+Note that all the above variants of the \texttt{lookup}
+function assume that there has to be an element whose
+left value is \texttt{key} somewhere in the mapping,
+and it is an error if that condition isn't satisfied
+(because it is an error to talk about the left or right
+value of something that isn't a pair).
+
+Equipped with the \texttt{lookup}, we can go back
+to the original problem and explain what it means
+for a proposition to be satisfied:
+
+\begin{Verbatim}[samepage=true]
+(define (satisfied? formula #;under valuation)
+  (match formula
+    (('and . clauses)
+     (every (lambda (clause)
+              (satisfied? clause #;under valuation))
+            clauses))
+    (('or . clauses)
+     (any (lambda (clause)
+            (satisfied? clause #;under valuation))
+          clauses))
+    (('not clause)
+     (not (satisfied? clause #;under valuation)))
+    ((? symbol?)
+     (lookup formula #;in valuation))))
+\end{Verbatim}
+
+There are many new things going on in here: the
+main part of the definition is the \texttt{match}
+expression, which -- in general -- takes the following
+form:
+
+\begin{Verbatim}[samepage=true]
+(match <expression> 
+  (<pattern-1> <value-1>) 
+  (<pattern-2> <value-2>)
+  ...)
+\end{Verbatim}
+
+The first \texttt{<pattern>} is \texttt{('and . clauses)}.
+It matches against all pairs whose left element is the symbol
+\texttt{and}, and if the match succeeds, the right element
+of the pair gets bound with the name \texttt{clauses}.
+So this part of code could be rewritten as\footnote{Technically
+speaking, the code is equivalent only if the \texttt{formula}
+always evaluates to the same value. In other cases, we would
+need to capture the value of \texttt{formula} before expansions.}:
+\begin{Verbatim}[samepage=true]
+(if (and (pair? formula) (eq? (car formula) 'and))
+  (let* ((clauses (cdr formula)))
+    <value-1>)
+  (match formula
+    ((<pattern-2> <value-2>)
+     ...)))
+\end{Verbatim}
+
+The \texttt{<value>} part from the scope of the first
+\texttt{<pattern>} is
+\texttt{(every (lambda (clause) (satisfied? clause valuation)) clauses)}.
+The function \texttt{every} takes a predicate and a list, and
+evaluates to the logical truth if the predicate is satisfied
+for every element in the list.
+
+The first argument to \texttt{every} is a \texttt{lambda}\footnote{
+One has to admit that \texttt{lambda} is a rather strange name.
+The reason for this weirdness is that the semantics of Scheme
+is based on a very simple powerful model of computation known
+as $\lambda$-calculus. Allegedly, its name is a result of editor's
+mistake, and dates back to the logical \textit{opus magnum}
+of Bertrand Russell and Alfred North Whitehead, \textit{Principia
+Mathematica}, where they used the notation $f(\hat{x})$
+to mean a function of $x$, rather that the value of $f$ in the
+point $x$. Alonzo Church modified the notation by taking the
+$\hat{x}$ before the function application, i.e. $\hat{x} . f(x)$.
+A typesetter wrote that as $\Lambda x . f(x)$, someone read that
+as the Greek letter \textit{lambda}\cite{Harrison1996}.} expression.
+The \texttt{lambda} expression takes the form:
+
+\texttt{(lambda <arguments> <body>)}
+
+It creates a new anonymous function. Actually we've already used
+\texttt{lambda} expressions before, albeit implicitly: the
+\texttt{(define (f . <args>) <body>)} is equivalent to
+\texttt{(define f (lambda <args> <body>))}.
+
+The second \texttt{(<pattern> <value>)} is similar, except that
+it uses the \texttt{any} function. The only unobvious part that is
+left is the \texttt{(? symbol?)} pattern. This pattern matches
+only if the \texttt{formula} satisfies the predicate \texttt{symbol?},
+or in other words, the pattern is matched if it is the case that
+\texttt{(symbol? formula)}.
+
+\subsection{Building structures}
+
+The \texttt{match} expression isn't a native Scheme form. It is
+a ``specialized language'' for destructuring complex objects, and
+it was added to Scheme through its powerful syntax extension
+mechanism.
+
+So far we have been using the \texttt{cons} or \texttt{list}
+functions for creating complex structures. I promised that in
+the remainder of this text we won't be using \texttt{car}
+and \texttt{cdr}, because \texttt{match} allows to do the same
+task better.
+
+We usually won't be using \texttt{cons} as well. There's yet another
+``specialized language'' that is meant for building complex objects.
+It makes use of the fact, that -- just as the notation \texttt{'x}
+is a shorthand for \texttt{(quote x)} -- the notation
+\texttt{`x} is a shorthand for \texttt{(quasiquote x)}, 
+\texttt{,x} is a shorthand for \texttt{(unquote x)}, and
+\texttt{,@x} is a shorthand  for \texttt{(unquote-splicing x)}.
+
+Those words alone, \texttt{quasiquote}, \texttt{unquote} and
+\texttt{unquote-splicing}, mean nothing. As with every other word
+in Scheme, you can make it mean whatever you want. However,
+the \texttt{quasiquote} by default is a syntactic extension
+that gives a special meaning to the other two words, and allows
+to quote only a part of a list. For example, the expression
+\texttt{`((+ 2 3) ,(+ 2 3))} evaluates to a list \texttt{((+ 2 3) 5)}, 
+and the expression  \texttt{`(0 ,@(divisors 4 1) 5)} evaluates
+to \texttt{(0 1 2 4 5)}.
+
+So instead of writing \texttt{(cons a b)}, we shall write
+\texttt{`(,a . ,b)} from now on.
+
+\subsection{Conclusion}
+
+At this point, we know enough about Scheme to use it to represent
+advanced notions and to solve some practical problems.

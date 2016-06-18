@@ -1,0 +1,225 @@
+
+\chapter{Matrix Operations}
+
+\begin{chapquote}{David Jacobs}
+``Code is like poetry; most of it shouldn't have been written.''
+\end{chapquote}
+
+In the previous chapters we've been dealing with certain methods
+of \textit{soft computing}. The numerical packages (or ``programming
+languages'', as some people call them) like R, SPSS or Matlab
+have often been praised for their ``native'' support for matrix
+operations and statistical notions.
+
+In this chapter, we will show how easily these concepts can be
+implemented in Scheme using the means that we already know. We will
+also learn to define and use \textit{variadic} functions.
+
+It is common in mathematics and science to organize the computations
+in the form of \textit{matrices}, because this allows to process
+large amounts of data in a systematic and uniform manner.
+
+A \textit{matrix} is a rectangular array of numbers, for example
+
+\begin{equation*}
+  \begin{pmatrix}
+    1 & 2 & 3 & 4 \\
+    0 & 4 & 5 & 8 \\
+    0 & 0 & 7 & 6
+  \end{pmatrix}
+\end{equation*}
+
+We can use lists of lists of equal length to represent matrices,
+for example
+
+\begin{Verbatim}[samepage=true]
+'((1 2 3 4)
+  (0 4 5 8)
+  (0 0 7 6))
+\end{Verbatim}
+
+\subsection{Matrix addition}
+
+Given a matrix, we can determine its \textit{dimensions}.
+For example, the above matrix is three-by-four.
+
+\begin{Verbatim}[samepage=true]
+(define (dim x)
+  (match x
+    ((first . rest)
+     `(,(length x) . ,(dim first)))
+    (_ 
+     '())))
+\end{Verbatim}
+
+Probably the simplest algebraic operation that one can
+conduct on a matrix is \textit{matrix addition}: given
+matrices of the same dimensions, we add each element
+of one matrix to the corresponding element of the
+second matrix:
+
+\begin{Verbatim}[samepage=true]
+(define (M+2 A B)
+  (assert (equal? (dim A) (dim B)))
+  (map (lambda (a b)
+	 (map + a b))
+       A B))
+\end{Verbatim}
+\begin{Verbatim}[samepage=true]
+(e.g.
+ (M+2 '((1 2 3)
+        (4 5 6)) '((1 2 3)
+                   (4 5 6))) ===> ((2  4  6)
+                                   (8 10 12)))
+\end{Verbatim}
+
+\subsection{Variadic functions}
+
+I called the function \texttt{M+2} to emphasize that it
+takes two arguments. However, because matrix addition is
+associative (like conjunction and disjunction in propositional
+logic), so it might be more convenient to write
+\texttt{(M+ A B C)} instead of \texttt{(M+ (M+ A B) C)}
+or \texttt{(M+ A (M+ B C))}. Actually you can check that
+this is already the case for scalar addition: the
+expression \texttt{(+ 1 2 3)} evaluates to $6$. This
+is also true for multiplication.
+
+We can use the \texttt{M+2} function to perform the
+generalization to the arbitrary number of arguments,
+but no less than one.
+
+\begin{Verbatim}[samepage=true]
+(define (M+ . MM)
+  (match MM
+    ((M)
+     M)
+    ((A B . X)
+     (apply M+ `(,(M+2 A B) . X)))))
+\end{Verbatim}
+
+We have used an \textit{improper list} of arguments,
+or a \textit{dotted tail notation}. An improper list
+is a list whose last \texttt{cdr} is not the empty
+list. If the list of arguments is improper, then the
+symbol in the dotted tail will be bound the list of
+remaining arguments, so for example if we had no
+\texttt{list} function defined, we could use that
+feature:
+
+\begin{Verbatim}[samepage=true]
+(define (list . items)
+  items)
+\end{Verbatim}
+\begin{Verbatim}[samepage=true]
+;; or equivalently:
+\end{Verbatim}
+\begin{Verbatim}[samepage=true]
+(define list (lambda items items))
+\end{Verbatim}
+
+Note the use of the \texttt{apply} function. It takes
+a function and a list of arguments, and \textit{applies}
+the function to arguments. For example, if \texttt{l}
+is a list containing three elements, then
+\texttt{(apply f l)} is equivalent to
+\texttt{(f (first l) (second l) (third l))}. However,
+if the number of arguments is unknown, then the use
+of \texttt{apply} is inevitable if we want to preserve
+generality.
+
+Note also, that since the \texttt{max} and \texttt{min}
+functions can take the arbitrary number of arguments
+(and return the greatest and the smallest of them,
+respectively), instead of defining the \texttt{maximum}
+and \texttt{minimum} functions, we could have written
+\texttt{(apply max ...)} and \texttt{(apply min ...)}.
+
+The \texttt{apply} function can also take a variable
+number of arguments -- all arguments between the first
+and the last are simply \texttt{cons}ed to the last,
+so we could have written \texttt{(apply M+ (M+2 A B) X)}
+in the previous definition, yielding the same effect.
+
+\subsection{Transpose}
+If we swap columns and rows of a matrix, we obtain
+its \textit{transpose}. For example, the transpose
+of the matrix
+\begin{equation*}
+  \begin{pmatrix}
+    1 & 2 & 3 \\
+    4 & 5 & 6 
+  \end{pmatrix}
+\end{equation*}
+is the matrix
+\begin{equation*}
+  \begin{pmatrix}
+    1 & 4 \\
+    2 & 5 \\
+    3 & 6
+  \end{pmatrix}
+\end{equation*}
+
+The code for constructing the transpose of a matrix is
+a bit tricky:
+
+\begin{Verbatim}[samepage=true]
+(define (transpose M)
+  (apply map list M))
+\end{Verbatim}
+
+To see why it works, let's try to evaluate
+\begin{Verbatim}[samepage=true]
+(transpose '((1 2 3)
+             (4 5 6)))
+\end{Verbatim}
+
+According to our definition, it can be rewritten as
+
+\begin{Verbatim}[samepage=true]
+(apply map list '((1 2 3) (4 5 6)))
+\end{Verbatim}
+
+which -- according to what we said earlier -- can
+be rewritten as
+
+\begin{Verbatim}[samepage=true]
+(map list '(1 2 3) '(4 5 6))
+\end{Verbatim}
+
+which yields the desired result.
+
+\subsection{Matrix multiplication}
+
+Multiplying two matrices is much trickier than adding
+them and is best explained by a math tutor pointing
+fingers on the blackboard.
+
+If $A$ and $B$ are matrices, the product $AB$ is
+defined only if the number of columns of matrix $A$
+equals the number of rows of the matrix $B$. Then,
+the number of rows of $AB$ is the same as the number
+of rows of $A$, and the number of columns of $AB$
+is the same as the number of columns of $B$.
+
+\begin{Verbatim}[samepage=true]
+(define (M*2 A B)
+  (assert (let* (((A-rows A-cols) (dim A))
+		((B-rows B-cols) (dim B)))
+            (= A-cols B-rows)))
+  (let* ((B^T (transpose B)))
+    (map (lambda (rA)
+	   (map (lambda (cB)
+		  (sum (map * rA cB)))
+		B^T))
+	 A)))
+\end{Verbatim}
+
+We can extend the \texttt{M*2} to support arbitrary
+number of arguments analogically as we did for \texttt{M+2}.
+
+There are some other important operations that can be defined
+for matrices, like the determinant or rank. Their exposition
+is beyond the scope of this pamphlet, but some of them can
+be found in this pamphlet's repository.
+
