@@ -16,3 +16,7 @@ You can also leave your review [there](https://www.quora.com/unanswered/Whats-yo
 
 The book is available on the [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/),
 and the software -- on [GNU General Public License v.3](https://www.gnu.org/licenses/gpl.html).
+
+**If you're interested in compilers and other program transformations,
+you may wat to check out my master thesis,
+[Data Structure Optimization for Functional Programs](https://github.com/panicz/master-thesis)**
