@@ -578,7 +578,7 @@ will be the number of the satisfied disjunctive sub-clauses.
 \end{Snippet}
 \begin{Snippet}
 ;; where
-(define (generate-variables #;from first to #;last)
+(define (generate-variables #;from first #;to last)
   (if (> first last)
     '()
     `(,((numbered-symbol 'x) first) 
