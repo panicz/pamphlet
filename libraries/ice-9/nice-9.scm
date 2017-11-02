@@ -287,10 +287,12 @@
       ((_ ((values ... expression) rest ...) body ...)
        (every identifier? #'(values ...))
        #'(call-with-values (lambda () expression)
-	   (lambda (values ... . _)
-	     (and values ...
-		  (and-let*/match (rest ...)
-		    body ...)))))
+	   (match-lambda* 
+	       ((values ... . _)
+		(and values ...
+		     (and-let*/match (rest ...)
+				     body ...)))
+	     (_ #f))))
 
       ;; this behavior can be questionable, but to increase coherence,
       ;; every identifier bound with multiple values at the top level

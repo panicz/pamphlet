@@ -1,4 +1,6 @@
-\documentclass[a4paper,11pt]{book}
+\documentclass[12pt, oneside ]{book}
+\usepackage[a6paper,margin=0pt]{geometry}
+\renewcommand{\familydefault}{\sfdefault}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -15,8 +17,7 @@
   version={4.0}
 ]{doclicense}
 
-
-\newenvironment{Snippet}{\Verbatim[samepage=true]}{\endVerbatim}
+\newenvironment{Snippet}{\Verbatim[samepage=true,fontsize=\scriptsize]}{\endVerbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 'dedication' environment: To add a dedication paragraph 
@@ -74,6 +75,10 @@
 \clearpage
 \thispagestyle{plain}
 \par\vspace*{.35\textheight}{\centering I dedicate this booklet to my brother, who excels at Excel programming.\par}
+\par\vspace*{.35\textheight}{
+  \centering This e-book-reader-friendly version was prepared especially for Janek, co ma majtki z firanek.\par
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Auto-generated table of contents, list of figures and list of tables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

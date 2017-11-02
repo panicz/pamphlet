@@ -1,0 +1,605 @@
+\chapter{Genetic Algorithms}
+
+\begin{chapquote}{Richard Dawkins}
+``It is absolutely safe to say that if you meet somebody who claims
+not to believe in [what Richard Dawkins claims to believe], that
+person is ignorant, stupid or insane.''
+\end{chapquote}
+
+In the previous chapter, we defined what it means for a
+proposition to be satisfied under a given valuation.
+We also said informally, what it means for a propositional
+logic formula to be satisfiable -- namely, that there exists
+a valuation such that the formula is satisfied.
+
+This formulation is rather easy to comprehend, but in practice
+the amount of checks that we may need to perform to see if
+a formula is satisfiable may grow exponentially with the number
+of atomic propositions occurring in the formula: adding another
+atomic proposition doubles the number of possibilities, so the
+problem quickly becomes intractable.
+
+The problem isn't just theoretical. Although propositional
+calculus is extremely simple, it has some useful practical
+applications in software verification.
+
+Besides, despite the fact that the general solutions fail
+for more complex formulas, one can frequently find some
+\textit{heuristics} that perform very well for the most
+common cases.
+
+\section{Biological inspiration}
+
+One of such heuristics is called \textit{genetic algorithms}.
+It is inspired by the process of natural selection. Most
+generally, the idea is to encode the solution as a sequence
+of \textit{chromosomes} that behave as binary switches, where
+each switch splits the search space in half.
+
+The solutions are searched in larger groups called
+\textit{populations}. Each specimen of a population
+is evaluated using a so-called \textit{fitness function},
+which measures the quality of a solution. Rather than
+deciding that a given specimen is either good or bad,
+the fitness function assigns it a grade.
+
+\subsection{Chromosomal crossover}
+
+During the evolution process, the best solutions are
+combined with each other, and the worst ones are rejected.
+The hope is that if we combine a few individuals into
+a new one, it has a chance to inherit the good traits
+of its originals. In practice, the chromosomes
+of couples of the best specimens from the population
+are recombined in a \textit{crossing-over} process:
+therefore the new individuals can be regarded as
+an offspring of the old ones.
+
+The crossing-over can be defined as a function that takes
+two chromosomes, splits them at a random point and returns
+a new one composed of the prefix of the first one and
+the suffix of the second:
+
+\begin{Snippet}
+(define (cross-over daddy mommy)
+  (assert (= (length daddy) (length mommy)))
+  (let* ((position (random (length daddy)))
+	 (sperm (take daddy position))
+	 (ovum (drop mommy position)))
+    `(,@sperm ,@ovum)))
+\end{Snippet}
+
+Of the things that deserve attention, the first one is the
+presence of an \textit{assertion}. An assertion essentially
+does nothing more than informing the reader about the
+assumptions that the author made about the intended usage
+of a function -- in this particular case, he assumed that
+the two arguments -- \texttt{mommy} and \texttt{daddy}
+-- are lists of equal length.
+
+Then we choose a random\footnote{Each occurrence of the
+\texttt{(random n)} expression can be replaced with
+a value randomly chosen from the range $0$ to $n-1$.
+This \textit{indeterminism} is the main reason why
+I prefer the term \textit{expression-based programming}
+to \textit{functional programming}. Disallowing such
+non-deterministic expressions would make many simple
+things complex.} position from the range between
+$0$ and \textit{the length of chromosome} minus $1$.
+We use the prefix of the \texttt{daddy} chromosome (for
+example, if \texttt{daddy} is \texttt{(a\,b\,c\,d\,e)}, then
+\texttt{(take daddy 3)} evaluates to \texttt{(a\,b\,c)})
+and the suffix of the \texttt{mommy} chromosome (similarly,
+if \texttt{mommy} is \texttt{(u\,v\,w\,x\,y)}, then
+\texttt{(drop mommy 3)} evaluates to \texttt{(x\,y)}).
+
+Finally, we construct a new list from the prefix and the
+suffix.
+
+Now that we've seen the intimate details of copulation,
+we can have a look at the process from the social perspective.
+
+\subsection{The ceremony of procreation}
+
+Whether a given specimen becomes a daddy or a mommy is
+a matter of luck, and it may happen that the same specimen
+serves as a mommy during an intercourse with one partner,
+and as a daddy with another. It is important however, that the
+specimen with the high social status (i.e. better fitness
+function) procreate more often than the ragtag.
+
+Also, contrary to what many catholic priests say, it is
+perfectly fine when a specimen copulates with itself:
+when it happens, its child is an exact copy of its sole
+parent (however in practice this privilege is reserved
+to the elite).
+
+The ceremony proceeds as follows. First, a census is prepared,
+where each member of the population is assigned a value
+of a fitness function. Then, the census is sorted according
+to that value. Subsequently, the lottery drawing occurs, where each
+member of the population draws an opportunity to copulate.
+A single specimen can appear on the list more than once, and
+the probability of being enrolled to the list is higher for
+the specimens that are higher on the list. The length of
+the list equals the population. 
+
+Finally, each one of those lucky beggars is assigned a partner
+from another list generated in the same way (so, as it was said
+before, it can happen that the he-and-she spends the night with
+a \textit{very} familiar company), and then the new generation
+comes to the fore.
+
+This cycle can repeat for a few hundreds of times or more, until
+the best man from the population is satisfactory to its
+transcendent creator.
+
+It can also happen, say, once in a generation on average,
+that a chromosome of a specimen is mutated.
+
+The social perspective on the ceremony of copulation can
+be expressed in Scheme in the following way:
+
+\begin{Snippet}
+(define (procreate population social-status)
+  (let* ((census (map (lambda (specimen)
+			`(,(social-status specimen) . ,specimen))
+		      population))
+	 (social-ladder (sort census (lambda ((a . _) (b . _)) 
+                                       (> a b))))
+	 (population (map (lambda ((status . specimen)) specimen)
+			  social-ladder))
+	 (size (length population))
+	 (males (biased-random-indices size))
+	 (females (shuffle (biased-random-indices size)))
+	 (offspring (map (lambda (man woman)
+			   (cross-over (list-ref population man)
+				       (list-ref population woman)))
+			 males females)))
+     (map (on-average-once-in size (mutate #;using not)) offspring)))
+\end{Snippet}
+
+Note that the arguments to \texttt{lambda} provided to the \texttt{sort}
+function are destructured (pattern-matched) in place. This is a convenient
+syntactic extension to Scheme that replaces the built-in \texttt{lambda}.
+
+Also, we provided three arguments to \texttt{map}, rather than two
+-- one function of two arguments and two lists. The value of the expression
+will be a list whose elements are values of the function for the first element
+from the first list and the first element of the second list, the
+second element of the first list and the second element of the second
+list, and so on. It is assumed that the length of both lists is the
+same -- and that will also be the length of the result.
+
+We will learn how to define functions of variable number of arguments
+later. For now it is sufficient to know that it is possible to do so,
+which can often be convenient.
+
+It is apparent that the \texttt{cross-over} function is given two
+arguments that result from the invocation of the built-in \texttt{list-ref}
+function, which takes a list of length $n>0$ and an index $i$ (starting
+from $0$) and returns the $i$-th element of the list.
+
+The procedure \texttt{biased-random-indices} generates a list of
+indices with the desired distribution:
+
+\begin{Snippet}
+(define (biased-random-indices size)
+  (if (= size 0)
+      '()
+      `(,(random size) . ,(biased-random-indices (- size 1)))))
+\end{Snippet}
+
+The length of the generated list will be \texttt{size}.
+Furthermore, the index $0$ is guaranteed to appear on the list
+as the last element, has a $50\%$ chance to appear as the
+penultimate element, one third to appear one before, and so
+on, so it will almost certainly appear on the list more than
+once. On the other hand, the last index can appear only
+as the first element of the list, but this opportunity
+is shared evenly by all the other indices, so it is rather
+unlikely that it will ever happen. This strategy is called
+``equal opportunity policy'' by the social ideologies.
+
+Two separate lists are created for \texttt{males}
+and \texttt{females}. In order to increase the variation
+of the population, the list of \texttt{females} is shuffled,
+which gives them a chance to advance to the upper class.
+
+The shuffling proceeds as follows: if the list has more
+than one element, then a random pivot point is chosen,
+and the (recursively shuffled) sub-lists are swapped with
+a $50\%$ probability. Otherwise the shuffled list is
+identical with the original one.
+
+\begin{Snippet}
+(define (shuffle l)
+  (match (length l)
+    (0 '())
+    (1 l)
+    (n (let ((left right (split-at l (random n))))
+	 (if (= (random 2) 1)
+	     `(,@(shuffle right) ,@(shuffle left))
+	     `(,@(shuffle left) ,@(shuffle right)))))))
+\end{Snippet}
+
+The last thing that requires an explanation is the mutation.
+We wish it to occur on average once per generation, therefore
+we define a function that applies a given function with
+a probability $\frac{1}{n}$ for a given $n$, where $n$ is
+a positive integer:
+
+\begin{Snippet}
+(define ((on-average-once-in n action) arg)
+  (assert (and (integer? n) (> n 0)))
+  (if (= (random n) 0)
+      (action arg)
+      arg))
+\end{Snippet}
+
+The \texttt{action} of \texttt{mutation} that we wish to apply
+inverts the random chromosome:
+
+\begin{Snippet}
+(define ((mutate how) specimen)
+  (let* ((n (random (length specimen)))
+	 (mutation (how (list-ref specimen n))))
+    (alter #;element-number n #;in specimen #;with mutation)))
+\end{Snippet}
+
+The meaning \texttt{(alter n l value)} is a list that contains
+all the same elements as \texttt{l}, except its \texttt{n}-th
+element, which has a new \texttt{value}.
+
+\subsection{Evolution}
+
+The struggles of a sole generation in the quest for the perfect
+society are unlikely to bring satisfactory results (especially
+if these struggles boil down to copulation). Only within
+the span of many lifetimes can the true value arise. It is
+entirely up to the creator to decide many cycles of lives
+and deaths will the world witness, how complex can its inhabitants
+be, and how many of them will be brought to existence.
+
+\begin{Snippet}
+(define (evolve population #;towards criterion #;for iterations)
+  (assert (and (integer? iterations) (>= iterations 0)))
+  (if (<= iterations 0)
+      population
+      (evolve (procreate population criterion)
+              #;towards criterion 
+              #;for (- iterations 1))))
+\end{Snippet}
+\begin{Snippet}
+(define (generate-specimen dimension)
+  (generate-list dimension (lambda () (= (random 2) 0))))
+\end{Snippet}
+\begin{Snippet}
+(define (generate-population size dimension)
+  (generate-list size (lambda () (generate-specimen dimension))))
+\end{Snippet}
+\begin{Snippet}
+(define (optimize dimension population-size iterations criterion)
+  (let* ((population (generate-population population-size dimension))
+	 (modern-society (evolve population #;towards criterion 
+				 #;for iterations)))
+    (argmax criterion modern-society)))
+\end{Snippet}
+
+The \texttt{generate-list} procedure takes a \texttt{lambda} expression
+of no arguments that evaluates nondeterministically to some value
+(in our case, it is either logical truth or logical falsehood)
+and generates a list containing a specified number of results of
+such evaluation:
+\begin{Snippet}
+(define (generate-list n generator)
+  (assert (and (integer? size) (>= size 0)))
+  (if (= n 0)
+      '()
+      `(,(generator) . ,(generate-list (- n 1) generator))))
+\end{Snippet}
+
+Lastly, the \texttt{argmax} is a library function that takes
+a measure function and a list and evaluates to the element of the
+list that has the greatest measure.
+
+\section{Solving the SAT}
+
+In the previous section, we have presented a heuristic
+for optimizing certain problems with reasonable (linear)
+computational means. In this section, we will apply that
+heuristic to the problem of satisfiability in propositional
+logic.
+
+\subsection{Parsing DIMACS CNF files}
+
+We are not going to operate in vacuum -- there are many
+resources on the Web that provide the information and databases
+of examples. However, the format in which the examples are
+encoded may vary. One such format, proposed by the Center
+for Discrete Mathematics and Theoretical Computer Science,
+is called DIMACS CNF (for \textit{Conjunction Normal Form}),
+and is encoded in text files.
+
+A DIMACS CNF file is line-based. If a line begins with the \texttt{c}
+character, then it is a comment and shall be ignored. A first
+line of the DIMACS CNF file that is not a comment should take the
+form:
+
+\texttt{p cnf <variables> <clauses>}
+
+where \texttt{<variables>} specifies the maximum number of atomic
+propositions that appear in the formula, and \texttt{<clauses>}
+specifies the number of disjunctive clauses in the formula, or
+the number of meaningful lines that follow the given line.
+
+After the header, there appear \texttt{<clauses>} lines that
+contain sequences of integers (possibly negative) separated with
+white space and terminated with zero. A number $n$ means that
+an atomic formula appears in a given disjunctive clause,
+or -- if it is negative -- that it negation appears in the
+disjunctive clause.
+
+This may sound complicated, so it can be instructive to see
+an example. The file
+
+\begin{Snippet}
+c simple_v3_c2.cnf
+c
+p cnf 3 2
+1 -3 0
+2 3 -1 0
+\end{Snippet}
+
+would correspond to the formula 
+
+\texttt{(and (or x1 (not x3)) (or x2 x3 (not x1)))}
+
+As we can see, the whole expression is a conjunction (this is
+why it's called \textit{conjunctive} normal form), and its
+sub-expressions are disjunctions. There are two of them,
+as there are lines below the DIMACS CNF header. The first
+line contains numbers \texttt{1 -3 0}, which correspond
+to the expression \texttt{(or x1 (not x3))}, and the second
+line contains numbers \texttt{2 3 -1 0} that correspond to
+the expression \texttt{(or x2 x3 (not x1))}.
+
+It can be puzzling why someone decided to be able to represent
+only conjunctions of disjunctions of formulas and their negations,
+but it turns out that for every formula of classical logic
+one can find an equivalent conjunctive normal form. The details
+are beyond the scope of this pamphlet.
+
+We therefore need to find a way to transform the numbers
+given in the lines of the DIMACS CNF file into S-expressions.
+
+We will be using the \texttt{(ice-9 regex)} library bundled 
+with Guile and its ability to process \textit{regular expressions}.
+The regular expressions will be exposed here rather than explained,
+as the more detailed explanation can be found rather easily
+among the vast resources of the Worldwide Web.
+
+Also, we are going to process the file line by line. The
+Scheme itself doesn't provide facilities for doing that,
+but Guile comes with the \texttt{(ice-9 rdelim)} library
+which provides a function that returns a next available line
+from a given \texttt{input-port}. We will fix the
+\texttt{input-port} to mean \texttt{(current-input-port)},
+which is a notion similar to \textit{standard input} known
+from UNIX and its descendants.
+
+We shall gather the input lines from the list. The
+function terminates when it approaches an \textit{end-of-file
+object}:
+
+\begin{Snippet}
+(define (input-lines)
+  (let* ((line (read-line (current-input-port))))
+    (if (eof-object? line)
+	'()
+	`(,line . ,(input-lines)))))
+\end{Snippet}
+
+We shall ignore all the lines that contain anything else
+than (possibly negative) numbers separated with white-spaces
+and terminated with 0. For that, we will use the \texttt{filter}
+function which takes a predicate and a list, and returns
+a new list that contains only those elements from the old
+list that satisfy the predicate (preserving the order).
+Thus, the expression
+
+\begin{Snippet}
+(filter (lambda (line)
+          (string-match "^\\s*(-?[0-9]+\\s+)+0\\s*$" line))
+        (input-lines))
+\end{Snippet}
+
+will evaluate to a list that contains only the meaningful
+lines. Note that we used the \texttt{string-match} procedure
+here, that takes a regular expression and a string (I
+didn't mention it before, but Scheme also provides strings as
+its elementary data type) and evaluates to truth-ish value
+if the string matches the regular expression\footnote{
+We said that the logical truth is expressed using the
+\texttt{\#t} syntax, but in fact any value other than
+\texttt{\#f} is regarded as true in the context of the
+\texttt{if} form and its derivatives.}. The meaning
+of the regular expression is as follows. The \texttt{\string^}
+character anchors the regular expression at the beginning
+of the string. Then, \texttt{"\char`\\\char`\\s*"} allows a sequence
+of white spaces to appear at the beginning. The group
+\texttt{"(-?[0-9]+\char`\\\char`\\s+)+"} requires that there
+will appear (one or more times) a non-empty sequence of digits followed
+by a non-empty sequence of white-spaces, and that it can be
+prepended with the minus sign. Lastly, the expression
+\texttt{"0\char`\\\char`\\s*\$"} says that \texttt{0} has to appear
+at the end of the sequence, and that it can optionally be
+followed with a sequence of white characters.
+
+We now have a sequence of valid lines that need to be
+converted to propositional logic expressions. If a line has
+a form of a string \texttt{"2 3 -1 0"}, then if we split
+the line by spaces, we obtain a list of strings
+\texttt{("2" "3" "-1" "0")}. We can then further
+convert each of those strings (but the last one) to number
+using the built-in \texttt{string->number} function. We used
+the plural form, so it will probably require the use
+of \texttt{map}.
+
+Lastly, we need to convert the number to an expression,
+that is -- either a symbol or a negation of a symbol.
+We can therefore define:
+
+\begin{Snippet}
+(define (number->expression number)
+  (if (negative? number)
+    `(not ,(number->expression (- number)))
+     ((numbered-symbol 'x) number)))
+\end{Snippet}
+
+where \texttt{numbered-symbol} could be defined in
+terms of the primitive Scheme functions:
+
+\begin{Snippet}
+(define ((numbered-symbol symbol) number)
+  (symbol-append symbol (string->symbol (number->string number))))
+\end{Snippet}
+
+Putting it all together, we can define our DIMACS-CNF
+processor:
+
+\begin{Snippet}
+(define (process-dimacs-cnf)
+  (define (disjunction line)
+    (let* (((strings ... "0") (filter (lambda (s)
+                                        (not (equal? s "")))
+                                      (string-split line #\space)))
+           (numbers (map string->number strings))
+           (expressions (map number->expression numbers)))
+      `(or . ,expressions)))
+  (let* ((data-lines (filter (lambda (line)
+			       (string-match 
+                                "^\\s*(-?[0-9]+\\s+)+0$" 
+                                line))
+			     (input-lines))))
+    `(and . ,(map disjunction data-lines))))
+\end{Snippet}
+
+The only thing that can be unobvious is binding the value
+of the expression \texttt{(string-split line \#\char`\\space)}
+to the pattern \texttt{(strings ... "0")}. What it actually
+does is that it skips the last element (that is assumed to
+be \texttt{"0"}) from the result of \texttt{string-split}.
+The \texttt{...} operator for the pattern matcher behaves
+in a complementary way to the \texttt{unquote-splicing}
+operator, so for example, in the expression
+\begin{Snippet}
+(match '(1 2 3 4 5 6)
+  ((a b c ... z))
+  `(,a ,b ,@c ,z))
+\end{Snippet}
+\texttt{a},\texttt{b} and \texttt{z} will be bound with
+\texttt{1}, \texttt{2} and \texttt{6}, respectively, and the
+\texttt{c} name will be bound with the list \texttt{(3 4 5)},
+so the value of the above expression will simply be the list
+\texttt{(1 2 3 4 5 6)}. The \texttt{...} operator cannot
+appear more than once in a list, so for example patterns like
+\texttt{(a ... k ... z)} are illegal, as they would result
+in an ambiguous match. The \texttt{...} operator has
+another magical property -- in the pattern
+\begin{Snippet}
+(match '((a . 1) (b . 2) (c . 3))
+  (((keys . values) ...)
+   `(,keys ,values)))
+\end{Snippet}
+the \texttt{keys} symbol will be bound with the list \texttt{(a b c)},
+and the \texttt{values} symbol -- with \texttt{(1 2 3)}, so the
+list subjected to pattern matching will be \textit{unzipped}.
+We will be making a use of this feature later.
+
+Back to our parser, note that we used the value
+\texttt{\#\char`\\space} as the second argument to 
+\texttt{string-split}. It is a Scheme name for the ``space'' character 
+(characters are also a data type in Scheme). Note also
+that we had to apply another filter on the result of the
+\texttt{string-split}, in order to remove empty strings from it,
+that appeared if there were two or more
+consecutive spaces in a given line.
+
+\subsection{Applying the genetic strategy}
+
+Now that we know how to convert the DIMACS CNF files to Scheme,
+we can test whether the provided formulas are satisfiable -- or,
+to put it in another way -- seek for a valuation under which
+they are satisfied.
+
+It is rather obvious that our chromosomes will denote the
+values of subsequent atomic propositions for the valuations
+(therefore, they will be rather straightforward to decode).
+We need to know how many distinct atomic formulas are there
+in the main formula:
+
+\begin{Snippet}
+(define (atomic-formulas proposition)
+  (match proposition
+    (('not clause)
+     (atomic-formulas clause))
+    ((operator . clauses)
+     (delete-duplicates (append-map atomic-formulas clauses)))
+    ((? symbol?)
+     `(,proposition))))
+\end{Snippet}
+
+The code uses two library functions, \texttt{delete-duplicates}
+(that does exactly what it says\footnote{
+It is very important in programming to choose appropriate
+names for concepts, whether ultimate or intermediate, because
+knowing that we can trust the names, we don't need to resort
+to documentation.
+}) and \texttt{append-map}, which
+is like \texttt{map} except that its functional argument is
+expected to return a list, and that list is \textit{appended}
+to the resulting list, rather than \textit{inserted} as
+a single element.
+
+The structure of the formulas -- the conjunctive normal
+form -- also prompts us with the fitness function: that
+will be the number of the satisfied disjunctive sub-clauses.
+
+\begin{Snippet}
+(define (number-of-satisfied-subformulas #;of cnf #;for chromosome)
+  (let* ((variables (generate-variables #;from 1
+                                        #;to (length chromosome)))
+         (valuation (map cons variables chromosome))
+         (('and . or-clauses) cnf))
+    (count (lambda (subformula)
+             (satisfied? subformula #;under valuation))
+           or-clauses)))
+\end{Snippet}
+\begin{Snippet}
+;; where
+(define (generate-variables #;from first to #;last)
+  (if (> first last)
+    '()
+    `(,((numbered-symbol 'x) first) 
+      . ,(generate-variables #;from (+ first 1) #;to last))))
+\end{Snippet}
+
+Here, we use the library function \texttt{count} that takes
+a predicate and a list and returns the number of elements
+of the list that satisfy the predicate.
+
+The only thing that's left is to put the pieces together
+and enjoy the show\footnote{The file ``dubois20.cnf'',
+among others, was obtained from the website
+\url{http://people.sc.fsu.edu/~jburkardt/data/cnf/cnf.html}.}:
+
+\begin{Snippet}
+(let* ((formula (with-input-from-file "dubois20.cnf" 
+                  process-dimacs-cnf))
+       (dimension (length (atomic-formulas formula)))
+       (measure (lambda (chromosome)
+                  (number-of-satisfied-subformulas #;of formula
+                                               #;for chromosome))))
+  (optimize dimension 160 100 measure))
+\end{Snippet}
