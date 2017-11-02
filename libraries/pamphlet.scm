@@ -68,6 +68,10 @@
 (define-syntax (assert proposition)
   (begin))
 
+(define-syntax (e.g. . _)
+  (begin))
+
+#|
 (define-syntax e.g. (===> ~~~>)
   ((_ example)
    (or example
@@ -84,7 +88,8 @@
 
   ((_ example ~~~> value) ;; the ~~~> reads as "may nondeterministically
    example)) ;; evaluate to"
-
+|#
+   
 ;; The `publish' macro is used to provide means to separate public
 ;; definitions from private ones (such that are visible only from within
 ;; the public procedures and from within themselves).
