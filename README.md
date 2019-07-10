@@ -18,5 +18,5 @@ The book is available on the [CC-BY-SA](https://creativecommons.org/licenses/by-
 and the software -- on [GNU General Public License v.3](https://www.gnu.org/licenses/gpl.html).
 
 **If you're interested in compilers and other program transformations,
-you may wat to check out my master thesis,
+you may want to check out my master thesis,
 [Data Structure Optimization for Functional Programs](https://github.com/panicz/master-thesis)**
