@@ -190,8 +190,8 @@ as the names of the known properties (note that we assume
 that there's only one unknown per tuple):
 
 \begin{Snippet}
-(without-default ((universe '(()()))
-                  (unknown? (lambda (x) (eq? x '?))))
+(with-default ((universe '(()()))
+               (unknown? (lambda (x) (eq? x '?))))
   (define (unknown-label+rest tuple)
     (let* (((header . data) (specific universe))
 	   (unknown/index (list-index (specific unknown?) tuple))
